@@ -34,16 +34,16 @@
         font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
         background-color: var(--bg-deep);
         background-image:
-          radial-gradient(ellipse 85% 55% at 50% -15%, rgba(79, 209, 197, 0.22), transparent 55%),
-          radial-gradient(ellipse 50% 40% at 100% 30%, rgba(99, 179, 237, 0.14), transparent),
-          radial-gradient(ellipse 45% 35% at 0% 85%, rgba(79, 209, 197, 0.1), transparent);
+          radial-gradient(ellipse 90% 55% at 50% -18%, rgba(45, 55, 72, 0.45), transparent 52%),
+          radial-gradient(ellipse 55% 42% at 100% 25%, rgba(38, 48, 64, 0.35), transparent 50%),
+          radial-gradient(ellipse 50% 38% at 0% 88%, rgba(42, 52, 68, 0.28), transparent 50%);
         background-attachment: fixed;
         color: var(--text);
         line-height: 1.55;
       }
       .wrap {
         position: relative;
-        max-width: 980px;
+        max-width: 1280px;
         margin: 0 auto;
         padding: 2rem 1.15rem 3.5rem;
       }
@@ -74,8 +74,8 @@
         width: 6px;
         height: 6px;
         border-radius: 50%;
-        background: linear-gradient(135deg, var(--teal), var(--sky));
-        box-shadow: 0 0 12px rgba(79, 209, 197, 0.7);
+        background: linear-gradient(135deg, #64748b, #94a3b8);
+        box-shadow: none;
       }
       .hero-title {
         font-size: clamp(1.65rem, 4.5vw, 2.35rem);
@@ -90,22 +90,246 @@
         background-clip: text;
         color: transparent;
       }
-      .hero-sub {
-        margin: 0 auto;
-        max-width: 36rem;
-        font-size: 0.95rem;
-        color: var(--muted);
-        font-weight: 500;
-      }
-      .grid {
-        display: grid;
+      .layout-main {
+        display: flex;
+        flex-direction: column;
         gap: 1.35rem;
       }
-      @media (min-width: 820px) {
-        .grid {
-          grid-template-columns: minmax(280px, 340px) 1fr;
-          align-items: start;
+      .grid-main {
+        display: grid;
+        gap: 1.35rem;
+        align-items: start;
+      }
+      @media (min-width: 960px) {
+        .grid-main {
+          grid-template-columns: minmax(340px, 400px) minmax(480px, 1fr);
         }
+      }
+      .card--form {
+        padding: 1.35rem 1.4rem 1.45rem;
+      }
+      .field-block {
+        margin-bottom: 1.1rem;
+      }
+      .form-theme-card-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-bottom: 1.1rem;
+        align-items: start;
+      }
+      @media (min-width: 640px) {
+        .form-theme-card-row {
+          grid-template-columns: 1fr 1fr;
+          gap: 0.85rem 1rem;
+        }
+      }
+      .form-theme-card-row .field-block {
+        margin-bottom: 0;
+        min-width: 0;
+      }
+      .form-theme-card-row .theme-swatches {
+        max-height: min(320px, 42vh);
+      }
+      .form-theme-card-row .card-pickers {
+        grid-template-columns: 1fr;
+        max-height: min(320px, 42vh);
+        overflow-y: auto;
+        padding: 0.35rem 0.25rem 0.35rem 0;
+        margin: 0 -0.25rem;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(120, 130, 150, 0.45) transparent;
+      }
+      .form-theme-card-row .card-pickers::-webkit-scrollbar {
+        width: 6px;
+      }
+      .form-theme-card-row .card-pickers::-webkit-scrollbar-thumb {
+        background: rgba(120, 130, 150, 0.45);
+        border-radius: 99px;
+      }
+      .field-label {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: rgba(160, 174, 192, 0.9);
+        margin-bottom: 0.55rem;
+      }
+      .field-label::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, var(--glass-border), transparent);
+        opacity: 0.85;
+      }
+      .theme-swatches {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+        gap: 0.45rem;
+        max-height: min(260px, 38vh);
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding: 0.5rem;
+        border-radius: 16px;
+        background: rgba(0, 0, 0, 0.22);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        scrollbar-width: thin;
+        scrollbar-color: rgba(120, 130, 150, 0.45) transparent;
+      }
+      .theme-swatches::-webkit-scrollbar {
+        width: 6px;
+      }
+      .theme-swatches::-webkit-scrollbar-thumb {
+        background: rgba(120, 130, 150, 0.45);
+        border-radius: 99px;
+      }
+      .theme-swatch {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.4rem;
+        padding: 0.5rem 0.4rem 0.45rem;
+        margin: 0;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.04);
+        cursor: pointer;
+        font: inherit;
+        text-align: center;
+        transition: border-color 0.15s ease, background 0.15s ease;
+      }
+      .theme-swatch:hover {
+        background: rgba(255, 255, 255, 0.07);
+        border-color: rgba(255, 255, 255, 0.14);
+      }
+      .theme-swatch.is-selected {
+        border-color: rgba(255, 255, 255, 0.32);
+        background: rgba(255, 255, 255, 0.07);
+      }
+      .theme-swatch:focus {
+        outline: none;
+      }
+      .theme-swatch:focus-visible {
+        outline: 2px solid rgba(226, 232, 240, 0.45);
+        outline-offset: 2px;
+      }
+      .theme-swatch-dots {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .theme-swatch-dot {
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        flex-shrink: 0;
+      }
+      .theme-swatch-name {
+        font-size: 0.64rem;
+        font-weight: 600;
+        color: var(--muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        letter-spacing: 0.02em;
+      }
+      .card-pickers {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.55rem;
+      }
+      .card-pick {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+        border: none;
+        border-radius: 16px;
+        cursor: pointer;
+        font: inherit;
+        text-align: left;
+        background: rgba(0, 0, 0, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+        transition:
+          border-color 0.15s ease,
+          box-shadow 0.15s ease,
+          transform 0.15s ease;
+      }
+      .card-pick:hover {
+        border-color: rgba(255, 255, 255, 0.16);
+        transform: translateY(-1px);
+      }
+      .card-pick.is-selected {
+        border-color: rgba(255, 255, 255, 0.28);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+      }
+      .card-pick-thumb {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 120 / 58;
+        background: linear-gradient(180deg, rgba(15, 20, 30, 0.9), rgba(7, 10, 18, 0.95));
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .card-pick-thumb svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      .card-pick-meta {
+        padding: 0.5rem 0.65rem 0.6rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+      }
+      .card-pick-meta strong {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--text);
+        letter-spacing: 0.02em;
+      }
+      .card-pick-meta span {
+        font-size: 0.68rem;
+        color: var(--muted);
+        line-height: 1.35;
+      }
+      .bento-embed {
+        display: grid;
+        gap: 1.35rem;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 768px) {
+        .bento-embed {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .embed-hint {
+        grid-column: 1 / -1;
+        margin: 0;
+        font-size: 0.88rem;
+        color: var(--muted);
+        font-weight: 500;
+        padding: 0.85rem 1rem;
+        background: var(--glass);
+        border: 1px dashed var(--glass-border);
+        border-radius: 16px;
+        text-align: center;
+      }
+      .card--embed {
+        min-height: 0;
+      }
+      .card--embed h2 {
+        font-size: 0.82rem;
+        font-weight: 700;
+        margin: 0 0 0.65rem;
+        color: var(--muted);
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
       }
       .card {
         background: var(--glass);
@@ -127,7 +351,7 @@
         position: absolute;
         inset: -40% 20% auto;
         height: 70%;
-        background: radial-gradient(circle, rgba(79, 209, 197, 0.12), transparent 65%);
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.045), transparent 65%);
         pointer-events: none;
       }
       label {
@@ -152,8 +376,8 @@
       input[type="text"]:focus,
       select:focus {
         outline: none;
-        border-color: rgba(79, 209, 197, 0.45);
-        box-shadow: 0 0 0 3px rgba(79, 209, 197, 0.12);
+        border-color: rgba(148, 163, 184, 0.5);
+        box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.12);
       }
       .row {
         display: flex;
@@ -181,7 +405,7 @@
         font-size: 0.88rem;
       }
       .checks input {
-        accent-color: var(--teal);
+        accent-color: #94a3b8;
       }
       button {
         appearance: none;
@@ -194,12 +418,12 @@
         border-radius: 12px;
         cursor: pointer;
         font-size: 0.92rem;
-        box-shadow: 0 6px 24px rgba(79, 209, 197, 0.35);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
         transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
       }
       button:hover {
         filter: brightness(1.05);
-        box-shadow: 0 8px 28px rgba(79, 209, 169, 0.42);
+        box-shadow: 0 8px 26px rgba(0, 0, 0, 0.42);
         transform: translateY(-1px);
       }
       button:active {
@@ -223,33 +447,12 @@
         flex-wrap: wrap;
         margin-top: 0.65rem;
       }
-      .embed-box {
-        margin-top: 1.15rem;
-        padding-top: 1rem;
-        border-top: 1px solid var(--glass-border);
-      }
-      .embed-box h2 {
-        font-size: 0.82rem;
-        font-weight: 700;
-        margin: 0 0 0.5rem;
-        color: var(--muted);
-        letter-spacing: 0.02em;
-        text-transform: uppercase;
-      }
-      .embed-row {
-        margin-bottom: 0.85rem;
-      }
-      .embed-row .row-head {
+      .card--embed .row-head {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-end;
         gap: 0.5rem;
-        margin-bottom: 0.35rem;
-      }
-      .embed-row .row-head span {
-        font-size: 0.8rem;
-        color: var(--muted);
-        font-weight: 500;
+        margin-bottom: 0.45rem;
       }
       .embed-snippet {
         margin: 0;
@@ -266,25 +469,94 @@
         max-height: 180px;
         overflow: auto;
       }
-      .embed-row button.copy-btn {
+      .card--embed button.copy-btn {
         padding: 0.38rem 0.6rem;
         font-size: 0.76rem;
+      }
+      .preview-shell {
+        position: relative;
+        z-index: 1;
+        min-height: min(520px, 52vh);
+        border-radius: 18px;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+      }
+      .preview-loader {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        background: rgba(11, 15, 25, 0.72);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      }
+      .preview-loader[hidden] {
+        display: none !important;
+      }
+      .preview-loader-text {
+        margin: 0;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-top-color: #94a3b8;
+        border-right-color: #64748b;
+        animation: spin 0.75s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
       }
       .preview {
         position: relative;
         z-index: 1;
-        min-height: 240px;
+        min-height: min(480px, 48vh);
         display: flex;
         align-items: flex-start;
         justify-content: center;
-        padding: 0.65rem;
-        overflow: visible;
-        border-radius: 14px;
-        background: rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 1rem 1rem 1.25rem;
+        overflow: auto;
+        background: transparent;
+        border: none;
+      }
+      .preview:has(.preview-empty) {
+        align-items: center;
+        justify-content: center;
+      }
+      .preview-empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: min(280px, 35vh);
+        margin: 0;
+        padding: 1.25rem 1rem;
+        border-radius: 12px;
+        border: 1px dashed rgba(160, 174, 192, 0.28);
+        background: rgba(0, 0, 0, 0.22);
+        box-sizing: border-box;
+      }
+      .preview-empty-text {
+        margin: 0;
+        font-size: 0.87rem;
+        font-weight: 500;
+        color: rgba(160, 174, 192, 0.52);
+        letter-spacing: 0.03em;
       }
       .preview svg {
         max-width: 100%;
+        width: min(100%, 720px);
         height: auto;
         display: block;
         overflow: visible;
@@ -302,14 +574,52 @@
         color: var(--muted);
         font-weight: 500;
       }
+      #status:empty {
+        display: none;
+      }
+      .preview-toolbar {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.65rem 0.85rem;
+        margin-bottom: 0.7rem;
+      }
+      .preview-toolbar .status {
+        margin-bottom: 0;
+        flex: 1 1 140px;
+        min-width: 0;
+      }
+      .preview-toolbar-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .preview-toolbar-actions .secondary {
+        white-space: nowrap;
+      }
       .status.err {
         color: var(--danger);
       }
       .err-block {
-        white-space: pre-wrap;
-        font-family: ui-monospace, monospace;
-        font-size: 0.8rem;
-        color: var(--danger);
+        margin: 0;
+        padding: 1rem 1.1rem;
+        font-size: 0.88rem;
+        font-weight: 500;
+        line-height: 1.5;
+        color: #feb2b2;
+        text-align: center;
+        max-width: 28rem;
+      }
+      button:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+        transform: none !important;
+        filter: none !important;
+        box-shadow: none !important;
       }
       details {
         margin-top: 0.85rem;
@@ -330,7 +640,7 @@
         display: inline-block;
         margin-left: 0.35rem;
         transition: transform 0.2s ease;
-        color: var(--teal);
+        color: var(--muted);
       }
       details[open] summary::after {
         transform: rotate(90deg);
@@ -344,13 +654,11 @@
         <h1 class="hero-title">
           <span class="gradient-text">GitHub Stats xCards</span>
         </h1>
-        <p class="hero-sub">
-          Genera tarjetas SVG con tu actividad de GitHub: nivel, racha, repos y más.
-        </p>
       </header>
 
-      <div class="grid">
-        <div class="card">
+      <div class="layout-main">
+        <div class="grid-main">
+        <div class="card card--form">
           <form id="form" action="#" method="get">
             <div class="row">
               <div>
@@ -365,32 +673,31 @@
                 />
               </div>
             </div>
-            <div class="row">
-              <div>
-                <label for="theme">Tema</label>
-                <select id="theme" name="theme">
-                  <option value="dark">dark</option>
-                </select>
-                <p class="hint" style="margin-top: 0.35rem; font-size: 0.78rem; color: var(--muted)">
-                  Opciones desde <code>/themes</code> (catálogo interno del proyecto).
-                </p>
+            <input type="hidden" id="theme" name="theme" value="dark" />
+            <input type="hidden" id="card" name="card" value="level" />
+            <div class="form-theme-card-row">
+              <div class="field-block">
+                <span class="field-label" id="theme-label">Tema</span>
+                <div
+                  id="theme-swatches"
+                  class="theme-swatches"
+                  role="listbox"
+                  aria-labelledby="theme-label"
+                ></div>
               </div>
-              <div>
-                <label for="card">Tarjeta</label>
-                <select id="card" name="card">
-                  <option value="level">level</option>
-                  <option value="level-alternate">level-alternate</option>
-                  <option value="github">github</option>
-                  <option value="github-footer">github-footer</option>
-                  <option value="contribution-graph">contribution-graph</option>
-                  <option value="streak">streak</option>
-                  <option value="top-languages">top-languages</option>
-                </select>
+              <div class="field-block">
+                <span class="field-label" id="card-label">Tipo de tarjeta</span>
+                <div
+                  id="card-pickers"
+                  class="card-pickers"
+                  role="listbox"
+                  aria-labelledby="card-label"
+                ></div>
               </div>
             </div>
 
             <div class="checks">
-              <label
+              <label id="show-avatar-wrap"
                 ><input id="show_avatar" name="show_avatar" type="checkbox" checked />
                 Mostrar avatar</label
               >
@@ -433,43 +740,61 @@
                 </div>
               </div>
             </details>
-
-            <div class="actions">
-              <button type="submit">Cargar tarjeta</button>
-              <button type="button" class="secondary" id="open-url">Abrir URL</button>
-            </div>
           </form>
-
-          <div class="embed-box" id="embed-box" aria-live="polite">
-            <h2>Insertar en README / web</h2>
-            <p id="embed-hint" class="status" style="margin-top: 0">
-              Indica un usuario y pulsa «Cargar tarjeta» para generar Markdown y HTML.
-            </p>
-            <div class="embed-row" id="embed-md-row" hidden>
-              <div class="row-head">
-                <span>Markdown</span>
-                <button type="button" class="secondary copy-btn" data-copy-target="embed-md">
-                  Copiar
-                </button>
-              </div>
-              <pre class="embed-snippet" id="embed-md" tabindex="0"></pre>
-            </div>
-            <div class="embed-row" id="embed-html-row" hidden>
-              <div class="row-head">
-                <span>HTML</span>
-                <button type="button" class="secondary copy-btn" data-copy-target="embed-html">
-                  Copiar
-                </button>
-              </div>
-              <pre class="embed-snippet" id="embed-html" tabindex="0"></pre>
-            </div>
-          </div>
         </div>
 
         <div class="card card--preview">
-          <div id="status" class="status">Listo. Pulsa «Cargar tarjeta».</div>
-          <div id="preview" class="preview" aria-live="polite"></div>
+          <div class="preview-toolbar">
+            <div id="status" class="status" aria-live="polite"></div>
+            <div class="preview-toolbar-actions">
+              <button type="button" class="secondary" id="open-url">Abrir URL</button>
+              <button type="button" class="secondary" id="download-svg" disabled>
+                Descargar SVG
+              </button>
+            </div>
+          </div>
+          <div class="preview-shell">
+            <div id="preview-loader" class="preview-loader" hidden>
+              <div class="spinner" aria-hidden="true"></div>
+              <p class="preview-loader-text">Generando vista previa…</p>
+            </div>
+            <div
+              id="preview"
+              class="preview"
+              aria-label="Vista previa de la tarjeta SVG"
+            >
+              <div class="preview-empty" aria-hidden="true">
+                <p class="preview-empty-text">Sin vista previa</p>
+              </div>
+            </div>
+          </div>
         </div>
+        </div>
+
+        <section class="bento-embed" id="embed-section" aria-label="Código para insertar">
+          <p id="embed-hint" class="embed-hint">
+            Indica un usuario: la vista previa se actualiza sola al cambiar cualquier opción. Usa «Abrir URL» y
+            «Descargar SVG» encima del preview cuando corresponda.
+          </p>
+          <div class="card card--embed" id="embed-md-row" hidden>
+            <h2>Markdown</h2>
+            <div class="row-head">
+              <button type="button" class="secondary copy-btn" data-copy-target="embed-md">
+                Copiar
+              </button>
+            </div>
+            <pre class="embed-snippet" id="embed-md" tabindex="0"></pre>
+          </div>
+          <div class="card card--embed" id="embed-html-row" hidden>
+            <h2>HTML</h2>
+            <div class="row-head">
+              <button type="button" class="secondary copy-btn" data-copy-target="embed-html">
+                Copiar
+              </button>
+            </div>
+            <pre class="embed-snippet" id="embed-html" tabindex="0"></pre>
+          </div>
+        </section>
       </div>
     </div>
 
@@ -483,6 +808,10 @@
         const statusEl = document.getElementById("status");
         /** @type {HTMLButtonElement} */
         const openUrlBtn = document.getElementById("open-url");
+        /** @type {HTMLButtonElement} */
+        const downloadSvgBtn = document.getElementById("download-svg");
+        /** @type {HTMLDivElement} */
+        const previewLoader = document.getElementById("preview-loader");
         /** @type {HTMLElement} */
         const embedHint = document.getElementById("embed-hint");
         /** @type {HTMLElement} */
@@ -506,6 +835,7 @@
           "vue-dark",
           "gruvbox",
           "onedark",
+          "pastel",
           "shades-of-purple",
           "nightowl",
           "catppuccin-frappe",
@@ -513,15 +843,120 @@
           "vision-friendly-dark",
         ];
 
+        /** Tarjetas cuyas plantillas SVG incluyen avatar (level / github). */
+        const CARDS_WITH_AVATAR = new Set([
+          "level",
+          "level-alternate",
+          "github",
+          "github-footer",
+        ]);
+
+        /** Miniaturas esquemáticas (mismo aspecto que la vista previa real). */
+        const CARD_THUMB_SVG = {
+          level:
+            '<svg viewBox="0 0 120 58" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect x="6" y="7" width="108" height="44" rx="7" fill="#141c28" stroke="#2d3d52" stroke-width="0.8"/><circle cx="26" cy="29" r="10" fill="#3d4e63"/><rect x="42" y="15" width="64" height="4.5" rx="2" fill="#5c6f89"/><rect x="42" y="24" width="50" height="4.5" rx="2" fill="#4a5d73"/><rect x="42" y="33" width="58" height="4" rx="2" fill="#3d4f63"/><rect x="42" y="41" width="66" height="5" rx="2" fill="#4fd1c5" opacity="0.45"/></svg>',
+          "level-alternate":
+            '<svg viewBox="0 0 120 58" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect x="6" y="7" width="108" height="44" rx="7" fill="#141c28" stroke="#2d3d52" stroke-width="0.8"/><rect x="14" y="24" width="6" height="18" rx="2" fill="#4fd1c5" opacity="0.5"/><circle cx="34" cy="22" r="8" fill="#3d4e63"/><rect x="46" y="15" width="58" height="4" rx="1.5" fill="#5c6f89"/><rect x="46" y="24" width="44" height="4" rx="1.5" fill="#4a5d73"/><rect x="46" y="33" width="54" height="3.5" rx="1.5" fill="#3d4f63"/></svg>',
+          github:
+            '<svg viewBox="0 0 120 58" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect x="38" y="4" width="44" height="44" rx="8" fill="#141c28" stroke="#2d3d52" stroke-width="0.8"/><circle cx="60" cy="18" r="9" fill="#3d4e63"/><rect x="48" y="30" width="24" height="3" rx="1" fill="#5c6f89"/><rect x="45" y="36" width="30" height="3" rx="1" fill="#4a5d73"/><rect x="50" y="42" width="20" height="3" rx="1" fill="#4fd1c5" opacity="0.35"/></svg>',
+          "github-footer":
+            '<svg viewBox="0 0 120 58" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect x="4" y="12" width="112" height="34" rx="6" fill="#141c28" stroke="#2d3d52" stroke-width="0.8"/><circle cx="18" cy="29" r="9" fill="#3d4e63"/><rect x="32" y="19" width="28" height="3.5" rx="1" fill="#5c6f89"/><rect x="32" y="26" width="20" height="3" rx="1" fill="#4fd1c5" opacity="0.35"/><rect x="70" y="22" width="18" height="14" rx="3" fill="#1f2a3d" stroke="#334155" stroke-width="0.6"/><rect x="92" y="22" width="18" height="14" rx="3" fill="#1f2a3d" stroke="#334155" stroke-width="0.6"/></svg>',
+          "contribution-graph":
+            '<svg viewBox="0 0 120 58" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect x="8" y="10" width="104" height="38" rx="6" fill="#141c28" stroke="#2d3d52" stroke-width="0.8"/><path d="M 14 38 Q 32 18 50 32 T 86 24 L 106 30 L 106 42 L 14 42 Z" fill="#4fd1c5" opacity="0.12"/><path d="M 14 38 Q 32 18 50 32 T 86 24 L 106 30" fill="none" stroke="#4fd1c5" stroke-width="2" stroke-linecap="round" opacity="0.75"/></svg>',
+          streak:
+            '<svg viewBox="0 0 120 58" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect x="6" y="8" width="108" height="42" rx="7" fill="#141c28" stroke="#2d3d52" stroke-width="0.8"/><line x1="42" y1="14" x2="42" y2="44" stroke="#2d3d52" stroke-width="0.8"/><line x1="78" y1="14" x2="78" y2="44" stroke="#2d3d52" stroke-width="0.8"/><rect x="12" y="22" width="24" height="14" rx="3" fill="#1f2a3d"/><rect x="48" y="18" width="24" height="22" rx="3" fill="#2a3545"/><circle cx="60" cy="28" r="8" fill="none" stroke="#4fd1c5" stroke-width="1.5" opacity="0.65"/><rect x="84" y="22" width="24" height="14" rx="3" fill="#1f2a3d"/></svg>',
+          "top-languages":
+            '<svg viewBox="0 0 120 58" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect x="8" y="8" width="104" height="42" rx="7" fill="#141c28" stroke="#2d3d52" stroke-width="0.8"/><path d="M 38 29 A 14 14 0 1 1 38 28.9 Z" fill="none" stroke="#4fd1c5" stroke-width="5" opacity="0.75"/><path d="M 38 29 A 14 14 0 0 1 48 20" fill="none" stroke="#63b3ed" stroke-width="5" stroke-linecap="round"/><path d="M 38 29 A 14 14 0 0 1 30 18" fill="none" stroke="#a78bfa" stroke-width="5" stroke-linecap="round"/><rect x="62" y="16" width="48" height="4" rx="1" fill="#5c6f89"/><rect x="62" y="24" width="40" height="3.5" rx="1" fill="#4a5d73"/><rect x="62" y="31" width="36" height="3.5" rx="1" fill="#3d4f63"/></svg>',
+        };
+
+        /** @param {Function} fn @param {number} ms */
+        function debounce(fn, ms) {
+          var t;
+          return function () {
+            clearTimeout(t);
+            var a = arguments;
+            t = setTimeout(function () {
+              fn.apply(null, a);
+            }, ms);
+          };
+        }
+
+        var debouncedAutoLoadPreview = debounce(maybeAutoLoadPreview, 400);
+
+        const CARD_OPTIONS = [
+          { id: "level", label: "Nivel", desc: "Progreso, rango y barra" },
+          { id: "level-alternate", label: "Nivel alt.", desc: "Layout alternativo" },
+          { id: "github", label: "GitHub", desc: "Perfil vertical compacto" },
+          { id: "github-footer", label: "Pie README", desc: "Horizontal tipo pie" },
+          { id: "contribution-graph", label: "Gráfico", desc: "Actividad en el tiempo" },
+          { id: "streak", label: "Racha", desc: "Totales y racha actual" },
+          { id: "top-languages", label: "Lenguajes", desc: "Donut de repos" },
+        ];
+
+        function syncThemeSwatchSelection() {
+          const v = document.getElementById("theme").value;
+          document.querySelectorAll(".theme-swatch").forEach(function (btn) {
+            const on = btn.dataset.slug === v;
+            btn.classList.toggle("is-selected", on);
+            btn.setAttribute("aria-pressed", on ? "true" : "false");
+          });
+        }
+
+        function syncCardPickSelection() {
+          const v = document.getElementById("card").value;
+          document.querySelectorAll(".card-pick").forEach(function (btn) {
+            const on = btn.dataset.card === v;
+            btn.classList.toggle("is-selected", on);
+            btn.setAttribute("aria-pressed", on ? "true" : "false");
+          });
+        }
+
+        function renderCardPickers() {
+          const host = document.getElementById("card-pickers");
+          const input = /** @type {HTMLInputElement} */ (document.getElementById("card"));
+          host.innerHTML = "";
+          CARD_OPTIONS.forEach(function (opt) {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "card-pick";
+            btn.dataset.card = opt.id;
+            btn.setAttribute("role", "option");
+            btn.setAttribute("aria-label", opt.label + ": " + opt.desc);
+            const th = document.createElement("div");
+            th.className = "card-pick-thumb";
+            th.innerHTML = CARD_THUMB_SVG[opt.id] || "";
+            const meta = document.createElement("div");
+            meta.className = "card-pick-meta";
+            const strong = document.createElement("strong");
+            strong.textContent = opt.label;
+            const span = document.createElement("span");
+            span.textContent = opt.desc;
+            meta.appendChild(strong);
+            meta.appendChild(span);
+            btn.appendChild(th);
+            btn.appendChild(meta);
+            btn.addEventListener("click", function () {
+              input.value = opt.id;
+              syncCardPickSelection();
+              syncAvatarOptionVisibility();
+              maybeAutoLoadPreview();
+            });
+            host.appendChild(btn);
+          });
+          syncCardPickSelection();
+        }
+
         /**
-         * Rellena el desplegable de temas desde GET /themes.
+         * Carga slugs y paletas desde GET /themes y pinta la retícula de temas.
          * @returns {Promise<void>}
          */
-        async function populateThemeSelect() {
-          const sel = /** @type {HTMLSelectElement} */ (document.getElementById("theme"));
+        async function populateThemesAndSwatches() {
+          const input = /** @type {HTMLInputElement} */ (document.getElementById("theme"));
           const fromUrl = new URLSearchParams(window.location.search).get("theme");
-          const previous = (sel.value || fromUrl || "dark").trim().toLowerCase().replace(/_/g, "-");
+          const preferred = (fromUrl || input.value || "dark").trim().toLowerCase().replace(/_/g, "-");
           let slugs = FALLBACK_THEMES.slice();
+          /** @type {Record<string, Record<string, string>>} */
+          let palettes = {};
           try {
             const res = await fetch(new URL("/themes", getApiOrigin() + "/").href, {
               headers: { Accept: "application/json" },
@@ -531,22 +966,57 @@
               if (data && Array.isArray(data.themes) && data.themes.length) {
                 slugs = data.themes;
               }
+              if (data && data.palettes && typeof data.palettes === "object") {
+                palettes = data.palettes;
+              }
             }
           } catch (e) {
             /* fallback */
           }
-          sel.innerHTML = "";
+          const host = document.getElementById("theme-swatches");
+          host.innerHTML =
+            '<p class="theme-swatches-loading" style="margin:0;padding:0.85rem;text-align:center;font-size:0.8rem;color:var(--muted)">Cargando temas…</p>';
+          /** @type {DocumentFragment|HTMLElement} */
+          var frag = document.createDocumentFragment();
           slugs.forEach(function (slug) {
-            const opt = document.createElement("option");
-            opt.value = slug;
-            opt.textContent = slug;
-            sel.appendChild(opt);
+            const pal = palettes[slug] || {};
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "theme-swatch";
+            btn.dataset.slug = slug;
+            btn.setAttribute("role", "option");
+            btn.setAttribute("aria-label", "Tema " + slug);
+            const order = ["bg_color", "title_color", "text_color", "accent_color", "icon_color", "border_color"];
+            const dots = document.createElement("div");
+            dots.className = "theme-swatch-dots";
+            order.forEach(function (key) {
+              const hex = pal[key] || "#475569";
+              const d = document.createElement("span");
+              d.className = "theme-swatch-dot";
+              d.style.background = hex;
+              d.title = key.replace("_", " ");
+              dots.appendChild(d);
+            });
+            const name = document.createElement("span");
+            name.className = "theme-swatch-name";
+            name.textContent = slug;
+            btn.appendChild(dots);
+            btn.appendChild(name);
+            btn.addEventListener("click", function () {
+              input.value = slug;
+              syncThemeSwatchSelection();
+              maybeAutoLoadPreview();
+            });
+            frag.appendChild(btn);
           });
-          if (slugs.indexOf(previous) !== -1) {
-            sel.value = previous;
+          host.innerHTML = "";
+          host.appendChild(frag);
+          if (slugs.indexOf(preferred) !== -1) {
+            input.value = preferred;
           } else {
-            sel.value = slugs.indexOf("dark") !== -1 ? "dark" : slugs[0];
+            input.value = slugs.indexOf("dark") !== -1 ? "dark" : slugs[0];
           }
+          syncThemeSwatchSelection();
         }
 
         /** @returns {boolean} */
@@ -581,6 +1051,88 @@
           statusEl.classList.toggle("err", Boolean(isError));
         }
 
+        /** @param {boolean} on */
+        function setPreviewLoading(on) {
+          previewLoader.hidden = !on;
+          openUrlBtn.disabled = on;
+          if (on) {
+            downloadSvgBtn.disabled = true;
+          } else {
+            downloadSvgBtn.disabled = !preview.querySelector("svg");
+          }
+        }
+
+        /**
+         * Si hay usuario, actualiza embeds, la barra de direcciones y vuelve a pedir el SVG.
+         */
+        function maybeAutoLoadPreview() {
+          const usernameRaw = document.getElementById("username").value.trim();
+          if (!usernameRaw) return;
+          updateEmbedSnippets();
+          syncAddressBarFromForm();
+          loadCard(toAbsoluteApiUrl(buildStatsPath()));
+        }
+
+        function downloadPreviewSvg() {
+          const svg = preview.querySelector("svg");
+          if (!svg) return;
+          const usernameRaw = document.getElementById("username").value.trim() || "card";
+          const cardId = document.getElementById("card").value || "level";
+          const themeId = document.getElementById("theme").value || "dark";
+          const safe = function (s) {
+            return String(s).replace(/[^a-zA-Z0-9._-]/g, "_");
+          };
+          var serialized = new XMLSerializer().serializeToString(svg);
+          if (!/\sxmlns\s*=/.test(serialized)) {
+            serialized = serialized.replace(/<svg\b/, '<svg xmlns="http://www.w3.org/2000/svg"');
+          }
+          const blob = new Blob([serialized], { type: "image/svg+xml;charset=utf-8" });
+          const blobUrl = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = blobUrl;
+          a.download =
+            safe(usernameRaw) + "-" + safe(cardId) + "-" + safe(themeId) + "-xcards.svg";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(blobUrl);
+        }
+
+        /** @param {number} status */
+        function friendlyHttpMessage(status) {
+          if (status === 404) {
+            return "No se encontró ese usuario o el recurso no está disponible.";
+          }
+          if (status === 401 || status === 403) {
+            return "No autorizado para obtener datos. Revisa la configuración del servidor.";
+          }
+          if (status === 422 || status === 400) {
+            return "Algún parámetro no es válido. Revisa usuario, tema y opciones.";
+          }
+          if (status === 429) {
+            return "Demasiadas peticiones. Espera un momento e inténtalo de nuevo.";
+          }
+          if (status >= 500) {
+            return "El servidor no pudo generar la tarjeta. Inténtalo más tarde.";
+          }
+          return "No se pudo cargar la tarjeta.";
+        }
+
+        /** @param {string} message */
+        function showPreviewErrorMessage(message) {
+          preview.innerHTML = "";
+          const p = document.createElement("p");
+          p.className = "err-block";
+          p.textContent = message;
+          preview.appendChild(p);
+        }
+
+        function syncAvatarOptionVisibility() {
+          const wrap = document.getElementById("show-avatar-wrap");
+          const cardVal = document.getElementById("card").value;
+          wrap.hidden = !CARDS_WITH_AVATAR.has(cardVal);
+        }
+
         /**
          * Parámetros de la tarjeta (mismos que en `/stats/:user`).
          * @param {boolean} includeUsername si true, añade `username` (p. ej. query del generador en `/`).
@@ -593,11 +1145,14 @@
             params.set("username", usernameRaw);
           }
           params.set("theme", document.getElementById("theme").value);
-          params.set("card", document.getElementById("card").value);
-          params.set(
-            "show_avatar",
-            document.getElementById("show_avatar").checked ? "true" : "false",
-          );
+          const cardVal = document.getElementById("card").value;
+          params.set("card", cardVal);
+          if (CARDS_WITH_AVATAR.has(cardVal)) {
+            params.set(
+              "show_avatar",
+              document.getElementById("show_avatar").checked ? "true" : "false",
+            );
+          }
           params.set(
             "hide_border",
             document.getElementById("hide_border").checked ? "true" : "false",
@@ -684,7 +1239,12 @@
         }
 
         function hydrateFormFromLocation() {
-          if (!window.location.search || window.location.search.length < 2) return;
+          if (!window.location.search || window.location.search.length < 2) {
+            syncAvatarOptionVisibility();
+            syncThemeSwatchSelection();
+            syncCardPickSelection();
+            return;
+          }
           const p = new URLSearchParams(window.location.search);
           var hit = false;
           var u = p.get("username");
@@ -723,13 +1283,9 @@
               loadCard(toAbsoluteApiUrl(buildStatsPath()));
             }
           }
-        }
-
-        /** @param {string} body */
-        function showErrorBody(body) {
-          preview.innerHTML = '<div class="err-block"></div>';
-          const block = preview.querySelector(".err-block");
-          block.textContent = body;
+          syncAvatarOptionVisibility();
+          syncThemeSwatchSelection();
+          syncCardPickSelection();
         }
 
         /**
@@ -803,7 +1359,9 @@
          * @param {string} url
          */
         async function loadCard(url) {
-          setStatus("Cargando tarjeta…", false);
+          setPreviewLoading(true);
+          setStatus("", false);
+          statusEl.classList.remove("err");
           preview.innerHTML = "";
           try {
             const res = await fetch(url, {
@@ -814,16 +1372,13 @@
             const ctype = (res.headers.get("content-type") || "").toLowerCase();
 
             if (!res.ok) {
-              setStatus("Error HTTP " + res.status, true);
-              showErrorBody(body);
+              var failMsg = friendlyHttpMessage(res.status);
+              setStatus(failMsg, true);
+              showPreviewErrorMessage(failMsg);
               return;
             }
 
             if (ctype.includes("svg") || body.trimStart().startsWith("<svg")) {
-              var skipMsg = "";
-              if ((res.headers.get("x-cache-hit") || "").toLowerCase() === "true") {
-                skipMsg = " · desde caché";
-              }
               /** @type {SVGSVGElement | null} */
               const svg = mountSvgInPreview(body);
               if (svg) {
@@ -835,27 +1390,46 @@
                   });
                 });
               }
-              setStatus("Tarjeta cargada correctamente." + skipMsg, false);
+              setStatus("", false);
               return;
             }
 
-            setStatus("Respuesta inesperada (no SVG).", true);
-            showErrorBody(body);
-          } catch (err) {
-            setStatus("Fallo de red al llamar a la API.", true);
-            showErrorBody(String(err && err.message ? err.message : err));
+            var oddMsg =
+              "La respuesta no es una imagen SVG válida. Si el problema continúa, revisa el despliegue.";
+            setStatus(oddMsg, true);
+            showPreviewErrorMessage(oddMsg);
+          } catch (_err) {
+            var netMsg =
+              "No hay conexión o el servidor no responde. Comprueba que la API esté en marcha.";
+            setStatus(netMsg, true);
+            showPreviewErrorMessage(netMsg);
+          } finally {
+            setPreviewLoading(false);
           }
         }
 
         form.addEventListener("submit", function (ev) {
           ev.preventDefault();
-          updateEmbedSnippets();
-          syncAddressBarFromForm();
-          loadCard(toAbsoluteApiUrl(buildStatsPath()));
+          maybeAutoLoadPreview();
         });
+
+        document.getElementById("show_avatar").addEventListener("change", maybeAutoLoadPreview);
+        document.getElementById("hide_border").addEventListener("change", maybeAutoLoadPreview);
+        document.getElementById("username").addEventListener("input", debouncedAutoLoadPreview);
+        document.getElementById("username").addEventListener("change", maybeAutoLoadPreview);
+        ["bg_color", "title_color", "text_color", "icon_color", "border_color", "accent_color"].forEach(
+          function (id) {
+            document.getElementById(id).addEventListener("input", debouncedAutoLoadPreview);
+            document.getElementById(id).addEventListener("change", maybeAutoLoadPreview);
+          },
+        );
 
         openUrlBtn.addEventListener("click", function () {
           window.open(toAbsoluteApiUrl(buildStatsPath()), "_blank", "noopener,noreferrer");
+        });
+
+        downloadSvgBtn.addEventListener("click", function () {
+          downloadPreviewSvg();
         });
 
         document.querySelectorAll("[data-copy-target]").forEach(function (btn) {
@@ -878,7 +1452,8 @@
           });
         });
 
-        populateThemeSelect()
+        renderCardPickers();
+        populateThemesAndSwatches()
           .then(function () {
             hydrateFormFromLocation();
             updateEmbedSnippets();

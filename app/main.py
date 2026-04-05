@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 
 from app.api.v1.stats_router import router as stats_router
+from app.domain.models import ThemeTokens
 from app.domain.theme_registry import THEMES_BY_SLUG
 from app.core.config import get_settings
 from app.core.exceptions import AppError, app_error_exception_handler
@@ -93,9 +94,24 @@ async def healthcheck() -> dict[str, str]:
     return {"status": "ok", "service": settings.app_name, "version": settings.app_version}
 
 
-@app.get("/themes", response_class=JSONResponse)
-async def list_theme_slugs() -> dict[str, list[str]]:
-    """Sorted theme slugs for UI and docs (compatible with github-readme-streak-stats palettes)."""
+def _theme_tokens_public(t: ThemeTokens) -> dict[str, str]:
+    """Hex tokens for UI swatches (e.g. static preview)."""
 
-    return {"themes": sorted(THEMES_BY_SLUG.keys()), "count": len(THEMES_BY_SLUG)}
+    return {
+        "bg_color": t.bg_color,
+        "title_color": t.title_color,
+        "text_color": t.text_color,
+        "icon_color": t.icon_color,
+        "border_color": t.border_color,
+        "accent_color": t.accent_color,
+    }
+
+
+@app.get("/themes", response_class=JSONResponse)
+async def list_theme_slugs() -> dict[str, object]:
+    """Theme slugs plus optional `palettes` dict for color swatches in the preview UI."""
+
+    themes = sorted(THEMES_BY_SLUG.keys())
+    palettes = {slug: _theme_tokens_public(t) for slug, t in THEMES_BY_SLUG.items()}
+    return {"themes": themes, "count": len(themes), "palettes": palettes}
 

@@ -53,7 +53,7 @@ Interactive API docs: `/docs` (Swagger) and `/redoc`.
 | Method | Path | Description |
 |--------|------|-------------|
 | `GET` | `/stats/{username}` | Returns one SVG card (see query parameters). |
-| `GET` | `/themes` | JSON list of theme slugs (built-in catalog in `app/domain/themes_catalog.py`, with extras in `theme_registry.py`). |
+| `GET` | `/themes` | JSON: `themes` (slugs), `count`, `palettes` (per-slug hex tokens for UI swatches). |
 | `GET` | `/` | Static preview page (`static/index.html`). |
 | `GET` | `/health` | JSON health check. |
 
@@ -84,7 +84,7 @@ Default if omitted: `level`.
 
 Set with `theme=`. The slug must exist in the built-in catalog (`app/domain/themes_catalog.py`); **`GET /themes`** returns the current list as JSON. Overrides and extra slugs (e.g. `minimalist`) live in `app/domain/theme_registry.py`.
 
-**Examples:** `default`, `dark` (API default), `tokyonight`, `radical`, `dracula`, `vision-friendly-dark`, **`minimalist`**, **`vue`** (dark green).
+**Examples:** `default`, `dark` (API default), `tokyonight`, `radical`, `dracula`, `vision-friendly-dark`, **`pastel`** (rosa pastel), **`minimalist`**, **`vue`** (dark green).
 
 Custom hex colors (see below) override individual tokens on top of the chosen theme.
 

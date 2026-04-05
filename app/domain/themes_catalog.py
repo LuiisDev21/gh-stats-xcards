@@ -941,6 +941,14 @@ THEMES_BUILTIN: dict[str, ThemeTokens] = {
         border_color='#e4e2e2',
         accent_color='#19f9d8',
     ),
+    "pastel": ThemeTokens(
+        bg_color='#fff5f7',
+        title_color='#be185d',
+        text_color='#9d174d',
+        icon_color='#ec4899',
+        border_color='#fbcfe8',
+        accent_color='#f472b6',
+    ),
     "prussian": ThemeTokens(
         bg_color='#172f45',
         title_color='#38a0ff',
