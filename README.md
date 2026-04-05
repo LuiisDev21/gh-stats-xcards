@@ -181,6 +181,24 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 Or use `./run.sh` for the same app with reload on port `8000` (or `PORT`).
 
+### Docker
+
+Build and run (imagen mínima, Python 3.12):
+
+```bash
+docker build -t gh-stats-xcards .
+docker run --rm -p 8000:8000 -e GITHUB_TOKEN=ghp_xxxxxxxx gh-stats-xcards
+```
+
+O con Compose (lee variables del entorno del host; opcionalmente añade `--env-file .env`):
+
+```bash
+docker compose up --build
+```
+
+- **`PORT`**: por defecto `8000`; plataformas como Fly/Render suelen inyectar `PORT`.
+- No se incluye `.env` en la imagen; pasa secretos con `-e` / `--env-file` / secrets del orquestador.
+
 ### Deploy (generic PaaS)
 
 - **Build:** `pip install -r requirements.txt`
@@ -189,6 +207,8 @@ Or use `./run.sh` for the same app with reload on port `8000` (or `PORT`).
 Do **not** use `--reload` in production.
 
 On **Render**, place `runtime.txt` in the repo root (already included) so the build uses Python 3.12.x. Set `PORT` from the platform if required.
+
+**Fly.io** (ejemplo): `fly launch` usando el `Dockerfile`, máquina con `internal_port` = `8000` y variable `PORT=8000` si la plantilla no la fija.
 
 ---
 

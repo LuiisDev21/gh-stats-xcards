@@ -1,0 +1,9 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      PORT: "8000"
+      # Opcional: exporta GITHUB_TOKEN en el host o usa --env-file .env al arrancar
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
