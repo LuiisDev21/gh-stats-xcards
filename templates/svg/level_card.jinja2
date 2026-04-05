@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="{{ width }}" height="{{ height }}" viewBox="0 0 {{ width }} {{ height }}" role="img" aria-label="GitHub stats card">
+  <style>
+    @keyframes lvl-pct {
+      from { opacity: 0.35; }
+      to { opacity: 1; }
+    }
+    .anim-pct {
+      animation: lvl-pct 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1.45s both;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .anim-pct { animation: none; opacity: 1; }
+    }
+  </style>
+  <defs>
+    <linearGradient id="progress-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="{{ icon_color }}" />
+      <stop offset="100%" stop-color="{{ accent_color }}" />
+    </linearGradient>
+  </defs>
+
+  <rect x="0.5" y="0.5" rx="{{ corner_radius }}" ry="{{ corner_radius }}" width="{{ width - 1 }}" height="{{ height - 1 }}"
+        fill="{{ bg_color }}"
+        stroke="{% if hide_border %}transparent{% else %}{{ border_color }}{% endif %}" />
+
+  <text x="24" y="34" fill="{{ title_color }}" font-size="20" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">
+    GitHub Stats
+  </text>
+  <text x="24" y="56" fill="{{ text_color }}" font-size="14" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    {{ display_name }} (@{{ login }})
+  </text>
+
+  {% if show_avatar %}
+  <clipPath id="avatar-clip">
+    <circle cx="{{ width - 56 }}" cy="52" r="42" />
+  </clipPath>
+  <circle cx="{{ width - 56 }}" cy="52" r="42" fill="{{ border_color }}" />
+  <image href="{{ avatar_url }}" x="{{ width - 98 }}" y="10" width="84" height="84" clip-path="url(#avatar-clip)" preserveAspectRatio="xMidYMid slice" />
+  {% endif %}
+
+  <text x="24" y="100" fill="{{ text_color }}" font-size="13" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    Contributions (all-time): {{ total_contributions }}
+  </text>
+  <text x="24" y="122" fill="{{ text_color }}" font-size="13" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    Contributions ({{ current_year }}): {{ current_year_contributions }}
+  </text>
+  <text x="24" y="144" fill="{{ text_color }}" font-size="13" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    Level {{ level }} · {{ rank_title }}
+  </text>
+
+  <rect x="24" y="160" width="{{ width - 48 }}" height="14" rx="{{ bar_corner_radius }}" ry="{{ bar_corner_radius }}" fill="{{ border_color }}" opacity="0.45" />
+  <rect x="24" y="160" height="14" rx="{{ bar_corner_radius }}" ry="{{ bar_corner_radius }}" fill="url(#progress-gradient)" width="0">
+    <animate attributeName="width" values="0;{{ progress_width }}" dur="1.75s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines="0.12 0.88 0.2 1" />
+  </rect>
+  <text class="anim-pct" x="{{ width - 42 }}" y="167" text-anchor="end" dominant-baseline="central" fill="{{ text_color }}" font-size="10" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    {{ progress_percent_text }}
+  </text>
+</svg>
+

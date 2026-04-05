@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="{{ width }}" height="{{ height }}" viewBox="0 0 {{ width }} {{ height }}" role="img" aria-label="Contribution graph">
+  <style>
+    @keyframes cg-fade-in {
+      from { opacity: 0; }
+      to { opacity: 0.78; }
+    }
+    .cg-grid {
+      opacity: 0;
+      animation: cg-fade-in 0.5s ease forwards;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .cg-grid { animation: none; opacity: 0.78; }
+    }
+  </style>
+  <rect x="0.5" y="0.5" rx="{{ corner_radius }}" ry="{{ corner_radius }}" width="{{ width - 1 }}" height="{{ height - 1 }}"
+        fill="{{ bg_color }}"
+        stroke="{% if hide_border %}transparent{% else %}{{ border_color }}{% endif %}" />
+
+  <text x="{{ width // 2 }}" y="{{ graph_title_y }}" text-anchor="middle" fill="{{ title_color }}" font-size="{{ graph_title_font_size }}" font-family="system-ui, Segoe UI, Helvetica, Arial, sans-serif" font-weight="650">
+    {{ graph_title }}
+  </text>
+
+  {% if show_chart_grid %}
+  {% for tick in y_ticks %}
+  <line class="cg-grid" style="animation-delay: {{ (loop.index0 * 0.04) }}s" x1="{{ plot_pad_left }}" y1="{{ tick.y }}" x2="{{ width - plot_pad_right }}" y2="{{ tick.y }}"
+        stroke="{{ grid_color }}" stroke-width="{{ grid_stroke_width }}" stroke-dasharray="4 5" />
+  {% endfor %}
+  {% for gx in grid_vertical_xs %}
+  <line class="cg-grid" style="animation-delay: {{ (0.12 + loop.index0 * 0.035) }}s" x1="{{ gx }}" y1="{{ plot_pad_top }}" x2="{{ gx }}" y2="{{ baseline_y }}"
+        stroke="{{ grid_color }}" stroke-width="{{ grid_stroke_width }}" stroke-dasharray="4 5" />
+  {% endfor %}
+  {% endif %}
+
+  {% if area_path_d %}
+  <path d="{{ area_path_d }}" fill="{{ accent_color }}" opacity="0">
+    <animate attributeName="opacity" values="0;0.18" dur="0.55s" begin="0.95s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines="0.4 0 0.2 1" />
+  </path>
+  {% endif %}
+
+  {% if line_path_d %}
+  <path pathLength="100" d="{{ line_path_d }}" fill="none" stroke="{{ line_stroke }}" stroke-width="{{ line_stroke_width }}" stroke-linejoin="round" stroke-linecap="round"
+        stroke-dasharray="100" stroke-dashoffset="100">
+    <animate attributeName="stroke-dashoffset" values="100;0" dur="1.15s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines="0.4 0 0.2 1" />
+  </path>
+  {% endif %}
+
+  {% for dot in circle_dots %}
+  <circle cx="{{ dot.cx }}" cy="{{ dot.cy }}" r="{{ dot_radius }}" fill="{{ dot_fill }}" stroke="{{ dot_stroke }}" stroke-width="{{ dot_stroke_width }}" opacity="0">
+    <animate attributeName="opacity" values="0;1" dur="0.22s" begin="{{ (1.05 + loop.index0 * 0.025) }}s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines="0.34 1 0.64 1" />
+  </circle>
+  {% endfor %}
+
+  <text transform="translate({{ y_axis_label_x }} {{ height // 2 }}) rotate(-90)" text-anchor="middle" fill="{{ text_color }}" font-size="{{ y_axis_label_font_size }}" font-family="system-ui, Segoe UI, Helvetica, Arial, sans-serif">
+    Contributions
+  </text>
+
+  {% for tick in y_ticks %}
+  <text x="{{ plot_pad_left - 8 }}" y="{{ tick.y + 4 }}" text-anchor="end" fill="{{ text_color }}" font-size="{{ y_tick_font_size }}" font-family="system-ui, Segoe UI, Helvetica, Arial, sans-serif">{{ tick.label }}</text>
+  {% endfor %}
+
+  <text x="{{ width // 2 }}" y="{{ x_axis_title_y }}" text-anchor="middle" fill="{{ text_color }}" font-size="{{ x_axis_title_font_size }}" font-family="system-ui, Segoe UI, Helvetica, Arial, sans-serif">Days</text>
+
+  {% for xl in x_labels %}
+  <text x="{{ xl.x }}" y="{{ x_labels_y }}" text-anchor="middle" fill="{{ text_color }}" font-size="{{ x_label_font_size }}" font-family="system-ui, Segoe UI, Helvetica, Arial, sans-serif">{{ xl.label }}</text>
+  {% endfor %}
+</svg>

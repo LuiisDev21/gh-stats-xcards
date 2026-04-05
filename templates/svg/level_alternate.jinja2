@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="{{ width }}" height="{{ height }}" viewBox="0 0 {{ width }} {{ height }}" role="img" aria-label="GitHub alternate level card">
+  <style>
+    @keyframes alt-pct {
+      from { opacity: 0.35; }
+      to { opacity: 1; }
+    }
+    .anim-pct-alt {
+      animation: alt-pct 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1.45s both;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .anim-pct-alt { animation: none; opacity: 1; }
+    }
+  </style>
+  <rect x="0.5" y="0.5" rx="{{ corner_radius }}" ry="{{ corner_radius }}" width="{{ width - 1 }}" height="{{ height - 1 }}"
+        fill="{{ bg_color }}"
+        stroke="{% if hide_border %}transparent{% else %}{{ border_color }}{% endif %}" />
+
+  <text x="24" y="34" fill="{{ title_color }}" font-size="19" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">
+    Developer Level Card
+  </text>
+
+  <rect x="24" y="48" width="{{ width - 48 }}" height="2" fill="{{ border_color }}" />
+
+  <text x="24" y="78" fill="{{ text_color }}" font-size="15" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    {{ display_name }}
+  </text>
+  <text x="24" y="98" fill="{{ icon_color }}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    @{{ login }}
+  </text>
+
+  {% if show_avatar %}
+  <rect x="{{ width - 94 }}" y="58" width="70" height="70" rx="{{ avatar_rect_radius }}" ry="{{ avatar_rect_radius }}" fill="{{ border_color }}" opacity="0.3" />
+  <image href="{{ avatar_url }}" x="{{ width - 89 }}" y="63" width="60" height="60" preserveAspectRatio="xMidYMid slice" />
+  {% endif %}
+
+  {% set right_tx = (width - 102) if show_avatar else (width - 24) %}
+
+  <text x="24" y="136" fill="{{ text_color }}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    Lifetime contributions
+  </text>
+  <text x="24" y="158" fill="{{ title_color }}" font-size="22" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">
+    {{ total_contributions }}
+  </text>
+
+  <text x="{{ right_tx }}" y="136" text-anchor="end" fill="{{ text_color }}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    Level {{ level }}
+  </text>
+  <text x="{{ right_tx }}" y="158" text-anchor="end" fill="{{ accent_color }}" font-size="16" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">
+    {{ rank_title }}
+  </text>
+
+  <rect x="24" y="168" width="{{ width - 48 }}" height="10" rx="{{ bar_corner_radius }}" ry="{{ bar_corner_radius }}" fill="{{ border_color }}" opacity="0.4" />
+  <rect x="24" y="168" height="10" rx="{{ bar_corner_radius }}" ry="{{ bar_corner_radius }}" fill="{{ accent_color }}" width="0">
+    <animate attributeName="width" values="0;{{ progress_width }}" dur="1.75s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines="0.12 0.88 0.2 1" />
+  </rect>
+  <text class="anim-pct-alt" x="{{ right_tx - 14 }}" y="173" text-anchor="end" dominant-baseline="central" fill="{{ text_color }}" font-size="10" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    {{ progress_percent_text }}
+  </text>
+</svg>
+

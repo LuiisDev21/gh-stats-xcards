@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GitHub Stats — Vista previa</title>
+    <style>
+      :root {
+        color-scheme: dark light;
+        --bg: #0d1117;
+        --panel: #161b22;
+        --border: #30363d;
+        --text: #e6edf3;
+        --muted: #8b949e;
+        --accent: #58a6ff;
+        --danger: #f85149;
+      }
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #f6f8fa;
+          --panel: #ffffff;
+          --border: #d0d7de;
+          --text: #24292f;
+          --muted: #57606a;
+          --accent: #0969da;
+          --danger: #cf222e;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.5;
+      }
+      .wrap {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 1.5rem 1rem 3rem;
+      }
+      h1 {
+        font-size: 1.35rem;
+        font-weight: 650;
+        margin: 0 0 1.25rem;
+      }
+      .grid {
+        display: grid;
+        gap: 1.25rem;
+      }
+      @media (min-width: 820px) {
+        .grid {
+          grid-template-columns: 320px 1fr;
+          align-items: start;
+        }
+      }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1rem 1rem 1.1rem;
+      }
+      label {
+        display: block;
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-bottom: 0.25rem;
+      }
+      input[type="text"],
+      select {
+        width: 100%;
+        padding: 0.5rem 0.6rem;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--text);
+        font-size: 0.95rem;
+      }
+      .row {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.75rem;
+      }
+      .row > div {
+        flex: 1 1 140px;
+        min-width: 0;
+      }
+      .checks {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin: 0.75rem 0 1rem;
+        flex-wrap: wrap;
+      }
+      .checks label {
+        display: flex;
+        gap: 0.4rem;
+        align-items: center;
+        margin: 0;
+        color: var(--text);
+        font-size: 0.9rem;
+      }
+      button {
+        appearance: none;
+        border: 1px solid var(--border);
+        background: var(--accent);
+        color: #ffffff;
+        font-weight: 600;
+        padding: 0.55rem 0.9rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.95rem;
+      }
+      button:hover {
+        filter: brightness(1.06);
+      }
+      button.secondary {
+        background: transparent;
+        color: var(--text);
+      }
+      .actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.5rem;
+      }
+      .embed-box {
+        margin-top: 1rem;
+        padding-top: 0.9rem;
+        border-top: 1px solid var(--border);
+      }
+      .embed-box h2 {
+        font-size: 0.85rem;
+        font-weight: 650;
+        margin: 0 0 0.5rem;
+        color: var(--muted);
+      }
+      .embed-row {
+        margin-bottom: 0.85rem;
+      }
+      .embed-row .row-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        margin-bottom: 0.35rem;
+      }
+      .embed-row .row-head span {
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+      .embed-snippet {
+        margin: 0;
+        padding: 0.5rem 0.55rem;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--text);
+        font-family: ui-monospace, monospace;
+        font-size: 0.72rem;
+        line-height: 1.45;
+        white-space: pre-wrap;
+        word-break: break-all;
+        max-height: 180px;
+        overflow: auto;
+      }
+      .embed-row button.copy-btn {
+        padding: 0.35rem 0.55rem;
+        font-size: 0.78rem;
+      }
+      .preview {
+        min-height: 240px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 0.5rem;
+        overflow: visible;
+      }
+      .preview svg {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        overflow: visible;
+      }
+      .status {
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        color: var(--muted);
+      }
+      .status.err {
+        color: var(--danger);
+      }
+      .err-block {
+        white-space: pre-wrap;
+        font-family: ui-monospace, monospace;
+        font-size: 0.8rem;
+        color: var(--danger);
+      }
+      details {
+        margin-top: 0.75rem;
+      }
+      summary {
+        cursor: pointer;
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Tarjeta GitHub Stats</h1>
+
+      <div class="grid">
+        <div class="card">
+          <form id="form" action="#" method="get">
+            <div class="row">
+              <div>
+                <label for="username">Usuario de GitHub</label>
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  autocomplete="off"
+                  placeholder="torvalds"
+                  required
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <label for="theme">Tema</label>
+                <select id="theme" name="theme">
+                  <option value="default">default</option>
+                  <option value="dark" selected>dark</option>
+                  <option value="tokyonight">tokyonight</option>
+                  <option value="radical">radical</option>
+                  <option value="dracula">dracula</option>
+                  <option value="vision-friendly-dark">vision-friendly-dark</option>
+                  <option value="minimalist">minimalist</option>
+                  <option value="vue">vue</option>
+                </select>
+              </div>
+              <div>
+                <label for="card">Tarjeta</label>
+                <select id="card" name="card">
+                  <option value="level">level</option>
+                  <option value="level-alternate">level-alternate</option>
+                  <option value="github">github</option>
+                  <option value="github-footer">github-footer</option>
+                  <option value="contribution-graph">contribution-graph</option>
+                  <option value="top-languages">top-languages</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="checks">
+              <label
+                ><input id="show_avatar" name="show_avatar" type="checkbox" checked />
+                Mostrar avatar</label
+              >
+              <label
+                ><input id="hide_border" name="hide_border" type="checkbox" /> Ocultar
+                borde</label
+              >
+            </div>
+
+            <details>
+              <summary>Colores personalizados (hex, opcional)</summary>
+              <div class="row" style="margin-top: 0.6rem">
+                <div>
+                  <label for="bg_color">bg_color</label>
+                  <input id="bg_color" type="text" placeholder="#0d1117 o 0d1117" />
+                </div>
+                <div>
+                  <label for="title_color">title_color</label>
+                  <input id="title_color" type="text" placeholder="#58a6ff" />
+                </div>
+              </div>
+              <div class="row">
+                <div>
+                  <label for="text_color">text_color</label>
+                  <input id="text_color" type="text" />
+                </div>
+                <div>
+                  <label for="icon_color">icon_color</label>
+                  <input id="icon_color" type="text" />
+                </div>
+              </div>
+              <div class="row">
+                <div>
+                  <label for="border_color">border_color</label>
+                  <input id="border_color" type="text" />
+                </div>
+                <div>
+                  <label for="accent_color">accent_color</label>
+                  <input id="accent_color" type="text" />
+                </div>
+              </div>
+            </details>
+
+            <div class="actions">
+              <button type="submit">Cargar tarjeta</button>
+              <button type="button" class="secondary" id="open-url">Abrir URL</button>
+            </div>
+          </form>
+
+          <div class="embed-box" id="embed-box" aria-live="polite">
+            <h2>Insertar en README / web</h2>
+            <p id="embed-hint" class="status" style="margin-top: 0">
+              Indica un usuario y pulsa «Cargar tarjeta» para generar Markdown y HTML.
+            </p>
+            <div class="embed-row" id="embed-md-row" hidden>
+              <div class="row-head">
+                <span>Markdown</span>
+                <button type="button" class="secondary copy-btn" data-copy-target="embed-md">
+                  Copiar
+                </button>
+              </div>
+              <pre class="embed-snippet" id="embed-md" tabindex="0"></pre>
+            </div>
+            <div class="embed-row" id="embed-html-row" hidden>
+              <div class="row-head">
+                <span>HTML</span>
+                <button type="button" class="secondary copy-btn" data-copy-target="embed-html">
+                  Copiar
+                </button>
+              </div>
+              <pre class="embed-snippet" id="embed-html" tabindex="0"></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div id="status" class="status">Listo. Pulsa «Cargar tarjeta».</div>
+          <div id="preview" class="preview" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        /** @type {HTMLFormElement} */
+        const form = document.getElementById("form");
+        /** @type {HTMLDivElement} */
+        const preview = document.getElementById("preview");
+        /** @type {HTMLDivElement} */
+        const statusEl = document.getElementById("status");
+        /** @type {HTMLButtonElement} */
+        const openUrlBtn = document.getElementById("open-url");
+        /** @type {HTMLElement} */
+        const embedHint = document.getElementById("embed-hint");
+        /** @type {HTMLElement} */
+        const embedMdRow = document.getElementById("embed-md-row");
+        /** @type {HTMLElement} */
+        const embedHtmlRow = document.getElementById("embed-html-row");
+        /** @type {HTMLElement} */
+        const embedMdPre = document.getElementById("embed-md");
+        /** @type {HTMLElement} */
+        const embedHtmlPre = document.getElementById("embed-html");
+
+        /** @returns {boolean} */
+        function isFileOrOpaqueOrigin() {
+          return (
+            window.location.protocol === "file:" ||
+            window.location.origin === "null" ||
+            window.location.href.startsWith("file:")
+          );
+        }
+
+        /** @returns {string} */
+        function getApiOrigin() {
+          if (isFileOrOpaqueOrigin()) {
+            return "http://127.0.0.1:8000";
+          }
+          return window.location.origin;
+        }
+
+        /**
+         * Convierte ruta absoluta de API (p. ej. /stats/foo?…) en URL completa.
+         * @param {string} pathWithQuery
+         * @returns {string}
+         */
+        function toAbsoluteApiUrl(pathWithQuery) {
+          return new URL(pathWithQuery, getApiOrigin() + "/").href;
+        }
+
+        /** @param {string} msg @param {boolean} isError */
+        function setStatus(msg, isError) {
+          statusEl.textContent = msg;
+          statusEl.classList.toggle("err", Boolean(isError));
+        }
+
+        /**
+         * Parámetros de la tarjeta (mismos que en `/stats/:user`).
+         * @param {boolean} includeUsername si true, añade `username` (p. ej. query del generador en `/`).
+         * @returns {URLSearchParams}
+         */
+        function buildStatsParams(includeUsername) {
+          const params = new URLSearchParams();
+          const usernameRaw = document.getElementById("username").value.trim();
+          if (includeUsername && usernameRaw) {
+            params.set("username", usernameRaw);
+          }
+          params.set("theme", document.getElementById("theme").value);
+          params.set("card", document.getElementById("card").value);
+          params.set(
+            "show_avatar",
+            document.getElementById("show_avatar").checked ? "true" : "false",
+          );
+          params.set(
+            "hide_border",
+            document.getElementById("hide_border").checked ? "true" : "false",
+          );
+
+          const colorFields = [
+            "bg_color",
+            "title_color",
+            "text_color",
+            "icon_color",
+            "border_color",
+            "accent_color",
+          ];
+          colorFields.forEach(function (id) {
+            const el = document.getElementById(id);
+            const v = el.value.trim();
+            if (v) {
+              params.set(id, v.replace(/^#/, ""));
+            }
+          });
+          return params;
+        }
+
+        function buildStatsPath() {
+          const usernameRaw = document.getElementById("username").value.trim();
+          const username = encodeURIComponent(usernameRaw);
+          const params = buildStatsParams(false);
+          return "/stats/" + username + "?" + params.toString();
+        }
+
+        /** URL de esta página con la misma configuración (query). */
+        function buildGeneratorPageUrl() {
+          const qs = buildStatsParams(true).toString();
+          return getApiOrigin() + "/" + (qs ? "?" + qs : "");
+        }
+
+        /** @param {string} s */
+        function escapeHtmlAttr(s) {
+          return s
+            .replace(/&/g, "&amp;")
+            .replace(/"/g, "&quot;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+        }
+
+        function updateEmbedSnippets() {
+          const usernameRaw = document.getElementById("username").value.trim();
+          if (!usernameRaw) {
+            embedHint.hidden = false;
+            embedMdRow.hidden = true;
+            embedHtmlRow.hidden = true;
+            embedMdPre.textContent = "";
+            embedHtmlPre.textContent = "";
+            return;
+          }
+          embedHint.hidden = true;
+          embedMdRow.hidden = false;
+          embedHtmlRow.hidden = false;
+
+          const imgUrl = toAbsoluteApiUrl(buildStatsPath());
+          const pageUrl = buildGeneratorPageUrl();
+          const alt = usernameRaw + "'s GitHub Stats";
+          const md = "[![" + alt + "](" + imgUrl + ")](" + pageUrl + ")";
+          const html =
+            '<a href="' +
+            escapeHtmlAttr(pageUrl) +
+            '">\n  <img alt="' +
+            escapeHtmlAttr(alt) +
+            '" src="' +
+            escapeHtmlAttr(imgUrl) +
+            '" />\n</a>';
+
+          embedMdPre.textContent = md;
+          embedHtmlPre.textContent = html;
+        }
+
+        function syncAddressBarFromForm() {
+          if (isFileOrOpaqueOrigin()) return;
+          const user = document.getElementById("username").value.trim();
+          if (!user) return;
+          const qs = buildStatsParams(true).toString();
+          var path = window.location.pathname || "/";
+          history.replaceState(null, "", path + (qs ? "?" + qs : ""));
+        }
+
+        function hydrateFormFromLocation() {
+          if (!window.location.search || window.location.search.length < 2) return;
+          const p = new URLSearchParams(window.location.search);
+          var hit = false;
+          var u = p.get("username");
+          if (u) {
+            document.getElementById("username").value = u;
+            hit = true;
+          }
+          if (p.has("theme")) {
+            document.getElementById("theme").value = p.get("theme") || "dark";
+            hit = true;
+          }
+          if (p.has("card")) {
+            document.getElementById("card").value = p.get("card") || "level";
+            hit = true;
+          }
+          if (p.has("show_avatar")) {
+            document.getElementById("show_avatar").checked = p.get("show_avatar") === "true";
+            hit = true;
+          }
+          if (p.has("hide_border")) {
+            document.getElementById("hide_border").checked = p.get("hide_border") === "true";
+            hit = true;
+          }
+          ["bg_color", "title_color", "text_color", "icon_color", "border_color", "accent_color"].forEach(
+            function (id) {
+              if (p.has(id)) {
+                document.getElementById(id).value = p.get(id) || "";
+                hit = true;
+              }
+            },
+          );
+          if (hit) {
+            updateEmbedSnippets();
+            const userNow = document.getElementById("username").value.trim();
+            if (userNow) {
+              loadCard(toAbsoluteApiUrl(buildStatsPath()));
+            }
+          }
+        }
+
+        /** @param {string} body */
+        function showErrorBody(body) {
+          preview.innerHTML = '<div class="err-block"></div>';
+          const block = preview.querySelector(".err-block");
+          block.textContent = body;
+        }
+
+        /**
+         * Espera a que las imágenes externas del SVG terminen (o fallen).
+         * @param {SVGSVGElement} svg
+         * @returns {Promise<void>}
+         */
+        function whenSvgImagesLoaded(svg) {
+          const imgs = Array.from(svg.querySelectorAll("image"));
+          if (!imgs.length) return Promise.resolve();
+          return Promise.all(
+            imgs.map(function (el) {
+              return new Promise(function (resolve) {
+                var done = false;
+                function fin() {
+                  if (done) return;
+                  done = true;
+                  resolve();
+                }
+                el.addEventListener("load", fin, { once: true });
+                el.addEventListener("error", fin, { once: true });
+                try {
+                  if (el.complete === true) fin();
+                } catch (e) {
+                  /* algunos motores no exponen complete en SVGImageElement */
+                }
+                setTimeout(fin, 12000);
+              });
+            }),
+          ).then(function () {});
+        }
+
+        /**
+         * Reinicia animaciones SMIL y CSS tras cargar recursos (p. ej. avatar).
+         * @param {SVGSVGElement} svg
+         */
+        function restartPreviewAnimations(svg) {
+          if (typeof svg.setCurrentTime === "function") {
+            svg.setCurrentTime(0);
+          }
+          svg.querySelectorAll("*").forEach(function (el) {
+            var cs = window.getComputedStyle(el);
+            if (cs.animationName && cs.animationName !== "none") {
+              el.style.animation = "none";
+              void el.getBoundingClientRect();
+              el.style.animation = "";
+            }
+          });
+        }
+
+        /**
+         * Descarga el SVG y lo inyecta o muestra el cuerpo de error.
+         * @param {string} url
+         */
+        async function loadCard(url) {
+          setStatus("Cargando tarjeta…", false);
+          preview.innerHTML = "";
+          try {
+            const res = await fetch(url, {
+              headers: { Accept: "image/svg+xml" },
+              cache: "no-store",
+            });
+            const body = await res.text();
+            const ctype = (res.headers.get("content-type") || "").toLowerCase();
+
+            if (!res.ok) {
+              setStatus("Error HTTP " + res.status, true);
+              showErrorBody(body);
+              return;
+            }
+
+            if (ctype.includes("svg") || body.trimStart().startsWith("<svg")) {
+              var skipMsg = "";
+              if ((res.headers.get("x-cache-hit") || "").toLowerCase() === "true") {
+                skipMsg = " · desde caché";
+              }
+              preview.innerHTML = body;
+              /** @type {SVGSVGElement | null} */
+              const svg = preview.querySelector("svg");
+              if (svg) {
+                await whenSvgImagesLoaded(svg);
+                await new Promise(function (resolve) {
+                  requestAnimationFrame(function () {
+                    restartPreviewAnimations(svg);
+                    resolve();
+                  });
+                });
+              }
+              setStatus("Tarjeta cargada correctamente." + skipMsg, false);
+              return;
+            }
+
+            setStatus("Respuesta inesperada (no SVG).", true);
+            showErrorBody(body);
+          } catch (err) {
+            setStatus("Fallo de red al llamar a la API.", true);
+            showErrorBody(String(err && err.message ? err.message : err));
+          }
+        }
+
+        form.addEventListener("submit", function (ev) {
+          ev.preventDefault();
+          updateEmbedSnippets();
+          syncAddressBarFromForm();
+          loadCard(toAbsoluteApiUrl(buildStatsPath()));
+        });
+
+        openUrlBtn.addEventListener("click", function () {
+          window.open(toAbsoluteApiUrl(buildStatsPath()), "_blank", "noopener,noreferrer");
+        });
+
+        document.querySelectorAll("[data-copy-target]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var id = btn.getAttribute("data-copy-target");
+            var el = document.getElementById(id);
+            if (!el || !el.textContent) return;
+            navigator.clipboard.writeText(el.textContent).then(
+              function () {
+                var prev = btn.textContent;
+                btn.textContent = "Copiado";
+                setTimeout(function () {
+                  btn.textContent = prev;
+                }, 1600);
+              },
+              function () {
+                btn.textContent = "Error";
+              },
+            );
+          });
+        });
+
+        hydrateFormFromLocation();
+        updateEmbedSnippets();
+      })();
+    </script>
+  </body>
+</html>

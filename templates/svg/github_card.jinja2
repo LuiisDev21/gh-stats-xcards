@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="{{ width }}" height="{{ height }}" viewBox="0 0 {{ width }} {{ height }}" role="img" aria-label="GitHub stats card">
+  <style>
+    @keyframes gh-stat {
+      from { opacity: 0; transform: translateY(3px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .gh-stat-row { opacity: 0; animation: gh-stat 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+    .gh-stat-row:nth-of-type(1) { animation-delay: 0.06s; }
+    .gh-stat-row:nth-of-type(2) { animation-delay: 0.12s; }
+    .gh-stat-row:nth-of-type(3) { animation-delay: 0.18s; }
+    .gh-stat-row:nth-of-type(4) { animation-delay: 0.24s; }
+    .gh-icon { fill: none; stroke: {{ icon_color }}; stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; }
+    .gh-repo-star { fill: none; stroke: {{ accent_color }}; stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; }
+    @media (prefers-reduced-motion: reduce) {
+      .gh-stat-row { animation: none; opacity: 1; transform: none; }
+    }
+  </style>
+  <rect x="0.5" y="0.5" rx="{{ corner_radius }}" ry="{{ corner_radius }}" width="{{ width - 1 }}" height="{{ height - 1 }}"
+        fill="{{ bg_color }}"
+        stroke="{% if hide_border %}transparent{% else %}{{ border_color }}{% endif %}" />
+
+  <text x="24" y="28" fill="{{ title_color }}" font-size="18" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="650">
+    {{ display_name }}
+  </text>
+  <text x="24" y="48" fill="{{ text_color }}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    @{{ login }}
+  </text>
+
+  {% if show_avatar %}
+  <clipPath id="github-avatar-clip">
+    <circle cx="{{ width - 42 }}" cy="34" r="22" />
+  </clipPath>
+  <circle cx="{{ width - 42 }}" cy="34" r="22" fill="{{ border_color }}" />
+  <image href="{{ avatar_url }}" x="{{ width - 64 }}" y="12" width="44" height="44" clip-path="url(#github-avatar-clip)" preserveAspectRatio="xMidYMid slice" />
+  {% endif %}
+
+  <rect x="24" y="62" width="{{ width - 48 }}" height="1" fill="{{ border_color }}" />
+
+  {# Iconos estilo línea (16x16 en translate); texto desde x=50 #}
+  <g class="gh-stat-row">
+  <g transform="translate(24, 68)" class="gh-icon">
+    <rect x="2" y="3.5" width="12" height="10.5" rx="1"/>
+    <path d="M2 7.5h12M5 2v3.5M11 2v3.5"/>
+  </g>
+  <text x="50" y="82" fill="{{ text_color }}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif">Contribuciones totales</text>
+  <text x="{{ width - 24 }}" y="82" text-anchor="end" fill="{{ icon_color }}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">{{ total_contributions }}</text>
+  </g>
+
+  <g class="gh-stat-row">
+  <g transform="translate(24, 88)" class="gh-icon">
+    <circle cx="8" cy="8" r="6"/>
+    <path d="M8 5v3.2l2.5 1.4"/>
+  </g>
+  <text x="50" y="102" fill="{{ text_color }}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif">Contribuciones en {{ current_year }}</text>
+  <text x="{{ width - 24 }}" y="102" text-anchor="end" fill="{{ icon_color }}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">{{ current_year_contributions }}</text>
+  </g>
+
+  <g class="gh-stat-row">
+  <g transform="translate(24, 108)" class="gh-icon">
+    <circle cx="4" cy="5" r="2"/>
+    <circle cx="4" cy="11" r="2"/>
+    <circle cx="12" cy="8" r="2"/>
+    <path d="M6.1 5h2.8a1.9 1.9 0 0 1 1.9 1.9V8M6.1 11h2.8a1.9 1.9 0 0 0 1.9-1.9V8"/>
+  </g>
+  <text x="50" y="122" fill="{{ text_color }}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif">Pull requests</text>
+  <text x="{{ width - 24 }}" y="122" text-anchor="end" fill="{{ icon_color }}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">{{ total_prs }}</text>
+  </g>
+
+  <g class="gh-stat-row">
+  <g transform="translate(24, 128)" class="gh-icon">
+    <circle cx="8" cy="8" r="5.5"/>
+    <path d="M8 5.2v3.2M8 11h.01"/>
+  </g>
+  <text x="50" y="142" fill="{{ text_color }}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif">Issues</text>
+  <text x="{{ width - 24 }}" y="142" text-anchor="end" fill="{{ icon_color }}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">{{ total_issues }}</text>
+  </g>
+
+  <g class="gh-stat-row">
+  <text x="24" y="162" fill="{{ icon_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="650">Top repos</text>
+  </g>
+
+  {% if top_repos %}
+  {% for repo in top_repos %}
+  {% set ry = 180 + loop.index0 * 18 %}
+  {% set nc = (repo.stargazer_count|string)|length %}
+  {% set star_left = width - 24 - nc * 7 - 13 %}
+  <text x="24" y="{{ ry }}" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif">{{ repo.display_label or repo.name_with_owner }}</text>
+  <g transform="translate({{ star_left }}, {{ ry - 10 }}) scale(0.42)" class="gh-repo-star">
+    <polygon points="8,2.2 9.65,6.1 13.9,6.55 10.65,9.25 11.55,13.45 8,11.35 4.45,13.45 5.35,9.25 2.1,6.55 6.35,6.1" />
+  </g>
+  <text x="{{ width - 24 }}" y="{{ ry }}" text-anchor="end" fill="{{ accent_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="600">{{ repo.stargazer_count }}</text>
+  {% endfor %}
+  {% else %}
+  <text x="24" y="182" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif" opacity="0.85">Sin repos</text>
+  {% endif %}
+
+  <text x="24" y="{{ level_label_y }}" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="600">Nivel {{ level }} · {{ rank_title }}</text>
+  <text x="{{ width - 24 }}" y="{{ level_label_y }}" text-anchor="end" fill="{{ text_color }}" font-size="10" font-family="Segoe UI, Helvetica, Arial, sans-serif">{{ progress_percent_text }}</text>
+
+  <rect x="24" y="{{ bar_y }}" width="{{ width - 48 }}" height="8" rx="{{ bar_corner_radius }}" ry="{{ bar_corner_radius }}" fill="{{ border_color }}" opacity="0.45" />
+  <rect x="24" y="{{ bar_y }}" height="8" rx="{{ bar_corner_radius }}" ry="{{ bar_corner_radius }}" fill="{{ accent_color }}" width="0">
+    <animate attributeName="width" values="0;{{ progress_width }}" dur="1.75s" fill="freeze" begin="0.62s" calcMode="spline" keyTimes="0;1" keySplines="0.12 0.88 0.2 1" />
+  </rect>
+</svg>

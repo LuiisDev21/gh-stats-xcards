@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="{{ width }}" height="{{ height }}" viewBox="0 0 {{ width }} {{ height }}" role="img" aria-label="GitHub stats footer card">
+  <style>
+    .gh-f-icon { fill: none; stroke: {{ icon_color }}; stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+  <rect x="0.5" y="0.5" rx="{{ corner_radius }}" ry="{{ corner_radius }}" width="{{ width - 1 }}" height="{{ height - 1 }}"
+        fill="{{ bg_color }}"
+        stroke="{% if hide_border %}transparent{% else %}{{ border_color }}{% endif %}" />
+
+  <text x="28" y="36" fill="{{ title_color }}" font-size="20" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">{{ display_name }}</text>
+  <text x="28" y="58" fill="{{ text_color }}" font-size="13" font-family="Segoe UI, Helvetica, Arial, sans-serif">@{{ login }}</text>
+
+  {% if show_avatar %}
+  <clipPath id="ghf-avatar-clip">
+    <circle cx="{{ width - 56 }}" cy="44" r="26" />
+  </clipPath>
+  <circle cx="{{ width - 56 }}" cy="44" r="26" fill="{{ border_color }}" />
+  <image href="{{ avatar_url }}" x="{{ width - 82 }}" y="18" width="52" height="52" clip-path="url(#ghf-avatar-clip)" preserveAspectRatio="xMidYMid slice" />
+  {% endif %}
+
+  <rect x="28" y="74" width="{{ width - 56 }}" height="1" fill="{{ border_color }}" />
+
+  {# Fila de métricas con iconos #}
+  <g transform="translate(32, 88)">
+    <g class="gh-f-icon"><rect x="0" y="3" width="14" height="12" rx="1"/><path d="M0 8h14M4 1v4M10 1v4"/></g>
+    <text x="22" y="10" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif">Contrib. totales</text>
+    <text x="22" y="22" fill="{{ accent_color }}" font-size="13" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">{{ total_contributions }}</text>
+  </g>
+  <g transform="translate(210, 88)">
+    <g class="gh-f-icon"><circle cx="7" cy="9" r="6"/><path d="M7 6v4l3 1.5"/></g>
+    <text x="22" y="10" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif">Año {{ current_year }}</text>
+    <text x="22" y="22" fill="{{ accent_color }}" font-size="13" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">{{ current_year_contributions }}</text>
+  </g>
+  <g transform="translate(403, 90)">
+    <g class="gh-f-icon">
+      <circle cx="4" cy="5" r="2"/>
+      <circle cx="4" cy="11" r="2"/>
+      <circle cx="12" cy="8" r="2"/>
+      <path d="M6.1 5h2.8a1.9 1.9 0 0 1 1.9 1.9V8M6.1 11h2.8a1.9 1.9 0 0 0 1.9-1.9V8"/>
+    </g>
+    <text x="22" y="10" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif">Pull requests</text>
+    <text x="22" y="22" fill="{{ accent_color }}" font-size="13" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">{{ total_prs }}</text>
+  </g>
+  <g transform="translate(590, 88)">
+    <g class="gh-f-icon"><circle cx="7" cy="9" r="5"/><path d="M7 6.5v3M7 12h.01"/></g>
+    <text x="22" y="10" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif">Issues</text>
+    <text x="22" y="22" fill="{{ accent_color }}" font-size="13" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">{{ total_issues }}</text>
+  </g>
+
+  {# Anillo de progreso (nivel), estilo badge #}
+  <g transform="translate({{ ring_cx }}, {{ ring_cy }})">
+    <circle r="{{ ring_r }}" fill="none" stroke="{{ border_color }}" stroke-width="7" opacity="0.45"/>
+    <circle r="{{ ring_r }}" fill="none" stroke="{{ accent_color }}" stroke-width="7" stroke-linecap="round"
+            stroke-dasharray="{{ ring_len }} {{ ring_len }}" stroke-dashoffset="{{ ring_len }}"
+            transform="rotate(-90)">
+      <animate attributeName="stroke-dashoffset" from="{{ ring_len }}" to="{{ ring_dashoffset }}" dur="1.2s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines="0.4 0 0.2 1" />
+    </circle>
+    <text y="6" text-anchor="middle" fill="{{ title_color }}" font-size="17" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">{{ level }}</text>
+    <text y="22" text-anchor="middle" fill="{{ text_color }}" font-size="9" font-family="Segoe UI, Helvetica, Arial, sans-serif">{{ rank_title }}</text>
+  </g>
+
+  <text x="28" y="150" fill="{{ icon_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="650">Top repos</text>
+  {% if top_repos_line %}
+  <text x="28" y="168" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif">{{ top_repos_line }}</text>
+  {% else %}
+  <text x="28" y="168" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif" opacity="0.85">Sin repos</text>
+  {% endif %}
+
+  <text x="28" y="{{ level_label_y }}" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="600">Progreso de nivel · {{ progress_percent_text }}</text>
+
+  <rect x="28" y="{{ bar_y }}" width="{{ width - 56 }}" height="8" rx="{{ bar_corner_radius }}" ry="{{ bar_corner_radius }}" fill="{{ border_color }}" opacity="0.45" />
+  <rect x="28" y="{{ bar_y }}" height="8" rx="{{ bar_corner_radius }}" ry="{{ bar_corner_radius }}" fill="{{ accent_color }}" width="0">
+    <animate attributeName="width" values="0;{{ progress_width }}" dur="1.75s" fill="freeze" begin="0.5s" calcMode="spline" keyTimes="0;1" keySplines="0.12 0.88 0.2 1" />
+  </rect>
+</svg>
