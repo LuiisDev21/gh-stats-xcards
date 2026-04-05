@@ -342,10 +342,11 @@ class GithubStatsService:
         pct = max(0.0, min(100.0, user_stats.level.progress_percent))
         ring_dashoffset = ring_len * (1.0 - pct / 100.0)
         ring_cx = float(width) - 72.0
-        ring_cy = 102.0
+        ring_cy = 120.0
+        footer_repos = activity.top_repos[:3]
         summary_parts = [
             f"{r.display_label or r.name_with_owner} ({r.stargazer_count})"
-            for r in activity.top_repos
+            for r in footer_repos
         ]
         top_repos_line = " · ".join(summary_parts) if summary_parts else ""
         if len(top_repos_line) > 118:
