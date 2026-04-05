@@ -36,6 +36,8 @@ Embed cards in your profile README or any page that accepts images.
 https://YOUR_DEPLOYMENT/stats/YOUR_USERNAME?card=github&theme=tokyonight&show_avatar=true
 ```
 
+**README avatars:** with `show_avatar=true`, the API embeds the profile photo inside the SVG (data URI) so GitHub does not block external avatar URLs referenced from SVG cards.
+
 ---
 
 ## Live preview
@@ -84,7 +86,7 @@ Default if omitted: `level`.
 
 Set with `theme=`. The slug must exist in the built-in catalog (`app/domain/themes_catalog.py`); **`GET /themes`** returns the current list as JSON. Overrides and extra slugs (e.g. `minimalist`) live in `app/domain/theme_registry.py`.
 
-**Examples:** `default`, `dark` (API default), `tokyonight`, `radical`, `dracula`, `vision-friendly-dark`, **`pastel`** (rosa pastel), **`minimalist`**, **`vue`** (dark green).
+**Examples:** `default`, `dark` (API default), `tokyonight`, `radical`, `dracula`, `vision-friendly-dark`, **`pastel`** (soft pink), **`minimalist`**, **`vue`** (dark green).
 
 Custom hex colors (see below) override individual tokens on top of the chosen theme.
 
@@ -183,21 +185,21 @@ Or use `./run.sh` for the same app with reload on port `8000` (or `PORT`).
 
 ### Docker
 
-Build and run (imagen mínima, Python 3.12):
+Build and run (minimal image, Python 3.12):
 
 ```bash
 docker build -t gh-stats-xcards .
 docker run --rm -p 8000:8000 -e GITHUB_TOKEN=ghp_xxxxxxxx gh-stats-xcards
 ```
 
-O con Compose (lee variables del entorno del host; opcionalmente añade `--env-file .env`):
+Or use Compose (reads the host environment; optionally add `--env-file .env`):
 
 ```bash
 docker compose up --build
 ```
 
-- **`PORT`**: por defecto `8000`; plataformas como Fly/Render suelen inyectar `PORT`.
-- No se incluye `.env` en la imagen; pasa secretos con `-e` / `--env-file` / secrets del orquestador.
+- **`PORT`**: defaults to `8000`; platforms like Fly/Render usually inject `PORT`.
+- `.env` is not baked into the image; pass secrets with `-e`, `--env-file`, or your orchestrator’s secrets.
 
 ### Deploy (generic PaaS)
 
@@ -208,7 +210,7 @@ Do **not** use `--reload` in production.
 
 On **Render**, place `runtime.txt` in the repo root (already included) so the build uses Python 3.12.x. Set `PORT` from the platform if required.
 
-**Fly.io** (ejemplo): `fly launch` usando el `Dockerfile`, máquina con `internal_port` = `8000` y variable `PORT=8000` si la plantilla no la fija.
+**Fly.io** (example): `fly launch` with the `Dockerfile`, machine `internal_port` = `8000`, and set `PORT=8000` if the template does not set it.
 
 ---
 

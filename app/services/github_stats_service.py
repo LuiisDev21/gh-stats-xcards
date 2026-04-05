@@ -81,6 +81,14 @@ class GithubStatsService:
         self._template_renderer = template_renderer
         self._settings = settings
 
+    async def _avatar_href_for_svg(self, avatar_url: str, show_avatar: bool) -> str:
+        """Return avatar URL suitable for ``<image href>`` (data URI when showing avatar)."""
+
+        if not show_avatar:
+            return avatar_url
+        data_uri = await self._github_client.fetch_url_as_data_uri(avatar_url)
+        return data_uri if data_uri is not None else avatar_url
+
     async def generate_card(self, options: StatsRequestOptions) -> CardRenderResult:
         """Generate an SVG card for the given options.
 
@@ -158,12 +166,17 @@ class GithubStatsService:
                 account_created_at=profile.created_at,
                 top_n_repos=self._settings.github_card_top_repos,
             )
+            avatar_href = await self._avatar_href_for_svg(
+                user_stats.profile.avatar_url,
+                options.show_avatar,
+            )
             if options.card_type == CardType.GITHUB_FOOTER:
                 context = self._build_github_card_footer_context(
                     user_stats=user_stats,
                     activity=activity,
                     theme=theme,
                     options=options,
+                    avatar_url=avatar_href,
                 )
             else:
                 context = self._build_github_card_context(
@@ -171,6 +184,7 @@ class GithubStatsService:
                     activity=activity,
                     theme=theme,
                     options=options,
+                    avatar_url=avatar_href,
                 )
         else:
             profile = await self._github_client.fetch_user_profile(options.username)
@@ -180,10 +194,15 @@ class GithubStatsService:
             )
             level_info = self._calculate_level(contributions.total_contributions_all_time)
             user_stats = GithubUserStats(profile=profile, contributions=contributions, level=level_info)
+            avatar_href = await self._avatar_href_for_svg(
+                user_stats.profile.avatar_url,
+                options.show_avatar,
+            )
             context = self._build_level_card_context(
                 user_stats=user_stats,
                 theme=theme,
                 options=options,
+                avatar_url=avatar_href,
             )
 
         svg = self._template_renderer.render(
@@ -275,6 +294,7 @@ class GithubStatsService:
         user_stats: GithubUserStats,
         theme: ThemeTokens,
         options: StatsRequestOptions,
+        avatar_url: str,
     ) -> dict[str, Any]:
         """Build Jinja2 context for level-style cards."""
 
@@ -291,7 +311,7 @@ class GithubStatsService:
             "avatar_rect_radius": avatar_rx,
             "display_name": user_stats.profile.name or user_stats.profile.login,
             "login": user_stats.profile.login,
-            "avatar_url": user_stats.profile.avatar_url,
+            "avatar_url": avatar_url,
             "show_avatar": options.show_avatar,
             "hide_border": options.hide_border,
             "total_contributions": user_stats.contributions.total_contributions_all_time,
@@ -311,6 +331,7 @@ class GithubStatsService:
         activity: GithubCardActivity,
         theme: ThemeTokens,
         options: StatsRequestOptions,
+        avatar_url: str,
     ) -> dict[str, Any]:
         """Build Jinja2 context for the GitHub card (perfil + actividad + top repos)."""
 
@@ -335,7 +356,7 @@ class GithubStatsService:
             "bar_y": bar_y,
             "display_name": user_stats.profile.name or user_stats.profile.login,
             "login": user_stats.profile.login,
-            "avatar_url": user_stats.profile.avatar_url,
+            "avatar_url": avatar_url,
             "show_avatar": options.show_avatar,
             "hide_border": options.hide_border,
             "total_contributions": user_stats.contributions.total_contributions_all_time,
@@ -359,6 +380,7 @@ class GithubStatsService:
         activity: GithubCardActivity,
         theme: ThemeTokens,
         options: StatsRequestOptions,
+        avatar_url: str,
     ) -> dict[str, Any]:
         """Tarjeta GitHub ancha para footer (layout horizontal)."""
 
@@ -398,7 +420,7 @@ class GithubStatsService:
             "ring_dashoffset": ring_dashoffset,
             "display_name": user_stats.profile.name or user_stats.profile.login,
             "login": user_stats.profile.login,
-            "avatar_url": user_stats.profile.avatar_url,
+            "avatar_url": avatar_url,
             "show_avatar": options.show_avatar,
             "hide_border": options.hide_border,
             "total_contributions": user_stats.contributions.total_contributions_all_time,

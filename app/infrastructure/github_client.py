@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import base64
 import logging
 from collections import Counter
 from datetime import UTC, date, datetime, time, timedelta
@@ -155,6 +156,25 @@ class GithubGraphqlClient:
         """Close the underlying HTTP client."""
 
         await self._http_client.aclose()
+
+    async def fetch_url_as_data_uri(self, url: str) -> str | None:
+        """Fetch a binary URL and return a ``data:…;base64,…`` URI for SVG ``<image href>``.
+
+        GitHub's README proxy (Camo) and many clients do not resolve external image URLs inside
+        SVG served as ``<img src=\"…svg\">``; embedding the avatar bytes keeps cards self-contained.
+        """
+
+        try:
+            response = await self._http_client.get(url, follow_redirects=True)
+            response.raise_for_status()
+            raw_ct = (response.headers.get("content-type") or "image/png").split(";")[0].strip().lower()
+            if raw_ct not in {"image/png", "image/jpeg", "image/jpg", "image/gif", "image/webp"}:
+                raw_ct = "image/png"
+            b64 = base64.standard_b64encode(response.content).decode("ascii")
+            return f"data:{raw_ct};base64,{b64}"
+        except Exception:
+            LOGGER.debug("No se pudo incrustar URL como data URI: %s", url, exc_info=True)
+            return None
 
     async def fetch_user_profile(self, username: str) -> GithubUserProfile:
         """Fetch public user profile fields from GitHub.
