@@ -19,15 +19,15 @@
 
   <rect x="28" y="74" width="{{ width - 56 }}" height="1" fill="{{ border_color }}" />
 
-  {# Fila de métricas con iconos #}
+  {# Metric row with icons #}
   <g transform="translate(32, 88)">
     <g class="gh-f-icon"><rect x="0" y="3" width="14" height="12" rx="1"/><path d="M0 8h14M4 1v4M10 1v4"/></g>
-    <text x="22" y="10" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif">Contrib. totales</text>
+    <text x="22" y="10" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif">All-time total</text>
     <text x="22" y="22" fill="{{ accent_color }}" font-size="13" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">{{ total_contributions }}</text>
   </g>
   <g transform="translate(210, 88)">
     <g class="gh-f-icon"><circle cx="7" cy="9" r="6"/><path d="M7 6v4l3 1.5"/></g>
-    <text x="22" y="10" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif">Año {{ current_year }}</text>
+    <text x="22" y="10" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif">In {{ current_year }}</text>
     <text x="22" y="22" fill="{{ accent_color }}" font-size="13" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">{{ current_year_contributions }}</text>
   </g>
   <g transform="translate(403, 90)">
@@ -46,7 +46,7 @@
     <text x="22" y="22" fill="{{ accent_color }}" font-size="13" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">{{ total_issues }}</text>
   </g>
 
-  {# Anillo de progreso (nivel), estilo badge #}
+  {# Level progress ring (badge style) #}
   <g transform="translate({{ ring_cx }}, {{ ring_cy }})">
     <circle r="{{ ring_r }}" fill="none" stroke="{{ border_color }}" stroke-width="7" opacity="0.45"/>
     <circle r="{{ ring_r }}" fill="none" stroke="{{ accent_color }}" stroke-width="7" stroke-linecap="round"
@@ -62,10 +62,10 @@
   {% if top_repos_line %}
   <text x="28" y="168" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif">{{ top_repos_line }}</text>
   {% else %}
-  <text x="28" y="168" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif" opacity="0.85">Sin repos</text>
+  <text x="28" y="168" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif" opacity="0.85">No repositories</text>
   {% endif %}
 
-  <text x="28" y="{{ level_label_y }}" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="600">Progreso de nivel · {{ progress_percent_text }}</text>
+  <text x="28" y="{{ level_label_y }}" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="600">Level progress · {{ progress_percent_text }}</text>
 
   <rect x="28" y="{{ bar_y }}" width="{{ width - 56 }}" height="8" rx="{{ bar_corner_radius }}" ry="{{ bar_corner_radius }}" fill="{{ border_color }}" opacity="0.45" />
   <rect x="28" y="{{ bar_y }}" height="8" rx="{{ bar_corner_radius }}" ry="{{ bar_corner_radius }}" fill="{{ accent_color }}" width="0">

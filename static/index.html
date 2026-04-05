@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -653,7 +653,7 @@
           <form id="form" action="#" method="get">
             <div class="row">
               <div>
-                <label for="username">Usuario de GitHub</label>
+                <label for="username">GitHub username</label>
                 <input
                   id="username"
                   name="username"
@@ -668,7 +668,7 @@
             <input type="hidden" id="card" name="card" value="level" />
             <div class="form-theme-card-row">
               <div class="field-block">
-                <span class="field-label" id="theme-label">Tema</span>
+                <span class="field-label" id="theme-label">Theme</span>
                 <div
                   id="theme-swatches"
                   class="theme-swatches"
@@ -677,7 +677,7 @@
                 ></div>
               </div>
               <div class="field-block">
-                <span class="field-label" id="card-label">Tipo de tarjeta</span>
+                <span class="field-label" id="card-label">Card type</span>
                 <div
                   id="card-pickers"
                   class="card-pickers"
@@ -690,20 +690,20 @@
             <div class="checks">
               <label id="show-avatar-wrap"
                 ><input id="show_avatar" name="show_avatar" type="checkbox" checked />
-                Mostrar avatar</label
+                Show avatar</label
               >
               <label
-                ><input id="hide_border" name="hide_border" type="checkbox" /> Ocultar
-                borde</label
+                ><input id="hide_border" name="hide_border" type="checkbox" /> Hide
+                border</label
               >
             </div>
 
             <details>
-              <summary>Colores personalizados (hex, opcional)</summary>
+              <summary>Custom colors (hex, optional)</summary>
               <div class="row" style="margin-top: 0.6rem">
                 <div>
                   <label for="bg_color">bg_color</label>
-                  <input id="bg_color" type="text" placeholder="#0d1117 o 0d1117" />
+                  <input id="bg_color" type="text" placeholder="#0d1117 or 0d1117" />
                 </div>
                 <div>
                   <label for="title_color">title_color</label>
@@ -738,40 +738,40 @@
           <div class="preview-toolbar">
             <div id="status" class="status" aria-live="polite"></div>
             <div class="preview-toolbar-actions">
-              <button type="button" class="secondary" id="open-url">Abrir URL</button>
+              <button type="button" class="secondary" id="open-url">Open URL</button>
               <button type="button" class="secondary" id="download-svg" disabled>
-                Descargar SVG
+                Download SVG
               </button>
             </div>
           </div>
           <div class="preview-shell">
             <div id="preview-loader" class="preview-loader" hidden>
               <div class="spinner" aria-hidden="true"></div>
-              <p class="preview-loader-text">Generando vista previa…</p>
+              <p class="preview-loader-text">Generating preview…</p>
             </div>
             <div
               id="preview"
               class="preview"
-              aria-label="Vista previa de la tarjeta SVG"
+              aria-label="SVG card preview"
             >
               <div class="preview-empty" aria-hidden="true">
-                <p class="preview-empty-text">Sin vista previa</p>
+                <p class="preview-empty-text">No preview yet</p>
               </div>
             </div>
           </div>
         </div>
         </div>
 
-        <section class="bento-embed" id="embed-section" aria-label="Código para insertar">
+        <section class="bento-embed" id="embed-section" aria-label="Embed code">
           <p id="embed-hint" class="embed-hint">
-            Indica un usuario: la vista previa se actualiza sola al cambiar cualquier opción. Usa «Abrir URL» y
-            «Descargar SVG» encima del preview cuando corresponda.
+            Enter a username: the preview updates automatically when you change any option. Use “Open URL” and
+            “Download SVG” above the preview when needed.
           </p>
           <div class="card card--embed" id="embed-md-row" hidden>
             <h2>Markdown</h2>
             <div class="row-head">
               <button type="button" class="secondary copy-btn" data-copy-target="embed-md">
-                Copiar
+                Copy
               </button>
             </div>
             <pre class="embed-snippet" id="embed-md" tabindex="0"></pre>
@@ -780,7 +780,7 @@
             <h2>HTML</h2>
             <div class="row-head">
               <button type="button" class="secondary copy-btn" data-copy-target="embed-html">
-                Copiar
+                Copy
               </button>
             </div>
             <pre class="embed-snippet" id="embed-html" tabindex="0"></pre>
@@ -849,7 +849,7 @@
           "vision-friendly-dark",
         ];
 
-        /** Tarjetas cuyas plantillas SVG incluyen avatar (level / github). */
+        /** Card types whose SVG templates include an avatar (level / github). */
         const CARDS_WITH_AVATAR = new Set([
           "level",
           "level-alternate",
@@ -857,7 +857,7 @@
           "github-footer",
         ]);
 
-        /** Miniaturas esquemáticas (mismo aspecto que la vista previa real). */
+        /** Schematic thumbnails (similar to the live preview). */
         const CARD_THUMB_SVG = {
           level:
             '<svg viewBox="0 0 120 58" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect x="6" y="7" width="108" height="44" rx="7" fill="#141c28" stroke="#2d3d52" stroke-width="0.8"/><circle cx="26" cy="29" r="10" fill="#3d4e63"/><rect x="42" y="15" width="64" height="4.5" rx="2" fill="#5c6f89"/><rect x="42" y="24" width="50" height="4.5" rx="2" fill="#4a5d73"/><rect x="42" y="33" width="58" height="4" rx="2" fill="#3d4f63"/><rect x="42" y="41" width="66" height="5" rx="2" fill="#4fd1c5" opacity="0.45"/></svg>',
@@ -890,13 +890,13 @@
         var debouncedAutoLoadPreview = debounce(maybeAutoLoadPreview, 400);
 
         const CARD_OPTIONS = [
-          { id: "level", label: "Nivel", desc: "Progreso, rango y barra" },
-          { id: "level-alternate", label: "Nivel alt.", desc: "Layout alternativo" },
-          { id: "github", label: "GitHub", desc: "Perfil vertical compacto" },
-          { id: "github-footer", label: "Pie README", desc: "Horizontal tipo pie" },
-          { id: "contribution-graph", label: "Gráfico", desc: "Actividad en el tiempo" },
-          { id: "streak", label: "Racha", desc: "Totales y racha actual" },
-          { id: "top-languages", label: "Lenguajes", desc: "Donut de repos" },
+          { id: "level", label: "Level", desc: "Rank, progress bar" },
+          { id: "level-alternate", label: "Level (alt)", desc: "Alternate layout" },
+          { id: "github", label: "GitHub", desc: "Compact vertical profile" },
+          { id: "github-footer", label: "README footer", desc: "Wide horizontal strip" },
+          { id: "contribution-graph", label: "Graph", desc: "Activity over time" },
+          { id: "streak", label: "Streak", desc: "Totals and current streak" },
+          { id: "top-languages", label: "Languages", desc: "Repository donut" },
         ];
 
         function syncThemeSwatchSelection() {
@@ -953,7 +953,7 @@
         }
 
         /**
-         * Carga slugs y paletas desde GET /themes y pinta la retícula de temas.
+         * Load theme slugs and palettes from GET /themes and render swatches.
          * @returns {Promise<void>}
          */
         async function populateThemesAndSwatches() {
@@ -981,7 +981,7 @@
           }
           const host = document.getElementById("theme-swatches");
           host.innerHTML =
-            '<p class="theme-swatches-loading" style="margin:0;padding:0.85rem;text-align:center;font-size:0.8rem;color:var(--muted)">Cargando temas…</p>';
+            '<p class="theme-swatches-loading" style="margin:0;padding:0.85rem;text-align:center;font-size:0.8rem;color:var(--muted)">Loading themes…</p>';
           /** @type {DocumentFragment|HTMLElement} */
           var frag = document.createDocumentFragment();
           slugs.forEach(function (slug) {
@@ -991,7 +991,7 @@
             btn.className = "theme-swatch";
             btn.dataset.slug = slug;
             btn.setAttribute("role", "option");
-            btn.setAttribute("aria-label", "Tema " + slug);
+            btn.setAttribute("aria-label", "Theme " + slug);
             const order = ["bg_color", "title_color", "text_color", "accent_color", "icon_color", "border_color"];
             const dots = document.createElement("div");
             dots.className = "theme-swatch-dots";
@@ -1043,7 +1043,7 @@
         }
 
         /**
-         * Convierte ruta absoluta de API (p. ej. /stats/foo?…) en URL completa.
+         * Turn an API path (e.g. /stats/foo?…) into a full URL.
          * @param {string} pathWithQuery
          * @returns {string}
          */
@@ -1069,7 +1069,7 @@
         }
 
         /**
-         * Si hay usuario, actualiza embeds, la barra de direcciones y vuelve a pedir el SVG.
+         * When a username is set: refresh embed snippets, the address bar, and refetch the SVG.
          */
         function maybeAutoLoadPreview() {
           const usernameRaw = document.getElementById("username").value.trim();
@@ -1107,21 +1107,21 @@
         /** @param {number} status */
         function friendlyHttpMessage(status) {
           if (status === 404) {
-            return "No se encontró ese usuario o el recurso no está disponible.";
+            return "That user or resource was not found.";
           }
           if (status === 401 || status === 403) {
-            return "No autorizado para obtener datos. Revisa la configuración del servidor.";
+            return "Not authorized to fetch data. Check server configuration.";
           }
           if (status === 422 || status === 400) {
-            return "Algún parámetro no es válido. Revisa usuario, tema y opciones.";
+            return "Invalid parameters. Check username, theme, and options.";
           }
           if (status === 429) {
-            return "Demasiadas peticiones. Espera un momento e inténtalo de nuevo.";
+            return "Too many requests. Wait a moment and try again.";
           }
           if (status >= 500) {
-            return "El servidor no pudo generar la tarjeta. Inténtalo más tarde.";
+            return "The server could not generate the card. Try again later.";
           }
-          return "No se pudo cargar la tarjeta.";
+          return "Could not load the card.";
         }
 
         /** @param {string} message */
@@ -1140,8 +1140,8 @@
         }
 
         /**
-         * Parámetros de la tarjeta (mismos que en `/stats/:user`).
-         * @param {boolean} includeUsername si true, añade `username` (p. ej. query del generador en `/`).
+         * Card query parameters (same as `/stats/:user`).
+         * @param {boolean} includeUsername when true, include `username` (e.g. generator page query on `/`).
          * @returns {URLSearchParams}
          */
         function buildStatsParams(includeUsername) {
@@ -1189,7 +1189,7 @@
           return "/stats/" + username + "?" + params.toString();
         }
 
-        /** URL de esta página con la misma configuración (query). */
+        /** This page URL with the same options (query string). */
         function buildGeneratorPageUrl() {
           const qs = buildStatsParams(true).toString();
           return getApiOrigin() + "/" + (qs ? "?" + qs : "");
@@ -1295,7 +1295,7 @@
         }
 
         /**
-         * Espera a que las imágenes externas del SVG terminen (o fallen).
+         * Wait until external images inside the SVG finish loading (or error).
          * @param {SVGSVGElement} svg
          * @returns {Promise<void>}
          */
@@ -1316,7 +1316,7 @@
                 try {
                   if (el.complete === true) fin();
                 } catch (e) {
-                  /* algunos motores no exponen complete en SVGImageElement */
+                  /* some engines do not expose complete on SVGImageElement */
                 }
                 setTimeout(fin, 12000);
               });
@@ -1325,9 +1325,9 @@
         }
 
         /**
-         * Reinicia animaciones SMIL del SVG. No toca animaciones CSS:
-         * al forzar `style.animation = ''` se pierde el `animation` del atributo style inicial
-         * y queda solo `opacity: 0` (p. ej. tarjeta streak) → vista previa en blanco.
+         * Restart SMIL animations on the SVG. Does not touch CSS animations:
+         * clearing `style.animation` would drop the inline animation and leave only `opacity: 0`
+         * (e.g. streak card) → blank preview.
          * @param {SVGSVGElement} svg
          */
         function restartPreviewAnimations(svg) {
@@ -1337,8 +1337,8 @@
         }
 
         /**
-         * Inserta el marcado SVG en #preview con namespace correcto (DOMParser XML).
-         * Si el XML no parsea, usa innerHTML como respaldo.
+         * Insert SVG markup into #preview with correct namespace (DOMParser XML).
+         * If parsing fails, fall back to innerHTML.
          * @param {string} body
          * @returns {SVGSVGElement | null}
          */
@@ -1361,7 +1361,7 @@
         }
 
         /**
-         * Descarga el SVG y lo inyecta o muestra el cuerpo de error.
+         * Fetch the SVG and inject it, or show an error message.
          * @param {string} url
          */
         async function loadCard(url) {
@@ -1401,12 +1401,12 @@
             }
 
             var oddMsg =
-              "La respuesta no es una imagen SVG válida. Si el problema continúa, revisa el despliegue.";
+              "The response is not valid SVG. If this keeps happening, check your deployment.";
             setStatus(oddMsg, true);
             showPreviewErrorMessage(oddMsg);
           } catch (_err) {
             var netMsg =
-              "No hay conexión o el servidor no responde. Comprueba que la API esté en marcha.";
+              "No connection or the server did not respond. Make sure the API is running.";
             setStatus(netMsg, true);
             showPreviewErrorMessage(netMsg);
           } finally {
@@ -1446,7 +1446,7 @@
             navigator.clipboard.writeText(el.textContent).then(
               function () {
                 var prev = btn.textContent;
-                btn.textContent = "Copiado";
+                btn.textContent = "Copied";
                 setTimeout(function () {
                   btn.textContent = prev;
                 }, 1600);

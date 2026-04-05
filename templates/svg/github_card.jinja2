@@ -36,13 +36,13 @@
 
   <rect x="24" y="62" width="{{ width - 48 }}" height="1" fill="{{ border_color }}" />
 
-  {# Iconos estilo línea (16x16 en translate); texto desde x=50 #}
+  {# Line icons (16x16 in translate); labels from x=50 #}
   <g class="gh-stat-row">
   <g transform="translate(24, 68)" class="gh-icon">
     <rect x="2" y="3.5" width="12" height="10.5" rx="1"/>
     <path d="M2 7.5h12M5 2v3.5M11 2v3.5"/>
   </g>
-  <text x="50" y="82" fill="{{ text_color }}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif">Contribuciones totales</text>
+  <text x="50" y="82" fill="{{ text_color }}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif">Total contributions</text>
   <text x="{{ width - 24 }}" y="82" text-anchor="end" fill="{{ icon_color }}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">{{ total_contributions }}</text>
   </g>
 
@@ -51,7 +51,7 @@
     <circle cx="8" cy="8" r="6"/>
     <path d="M8 5v3.2l2.5 1.4"/>
   </g>
-  <text x="50" y="102" fill="{{ text_color }}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif">Contribuciones en {{ current_year }}</text>
+  <text x="50" y="102" fill="{{ text_color }}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif">Contributions ({{ current_year }})</text>
   <text x="{{ width - 24 }}" y="102" text-anchor="end" fill="{{ icon_color }}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700">{{ current_year_contributions }}</text>
   </g>
 
@@ -91,10 +91,10 @@
   <text x="{{ width - 24 }}" y="{{ ry }}" text-anchor="end" fill="{{ accent_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="600">{{ repo.stargazer_count }}</text>
   {% endfor %}
   {% else %}
-  <text x="24" y="182" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif" opacity="0.85">Sin repos</text>
+  <text x="24" y="182" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif" opacity="0.85">No repositories</text>
   {% endif %}
 
-  <text x="24" y="{{ level_label_y }}" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="600">Nivel {{ level }} · {{ rank_title }}</text>
+  <text x="24" y="{{ level_label_y }}" fill="{{ text_color }}" font-size="11" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="600">Level {{ level }} · {{ rank_title }}</text>
   <text x="{{ width - 24 }}" y="{{ level_label_y }}" text-anchor="end" fill="{{ text_color }}" font-size="10" font-family="Segoe UI, Helvetica, Arial, sans-serif">{{ progress_percent_text }}</text>
 
   <rect x="24" y="{{ bar_y }}" width="{{ width - 48 }}" height="8" rx="{{ bar_corner_radius }}" ry="{{ bar_corner_radius }}" fill="{{ border_color }}" opacity="0.45" />

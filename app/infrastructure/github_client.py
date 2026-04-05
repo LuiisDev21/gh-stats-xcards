@@ -173,7 +173,7 @@ class GithubGraphqlClient:
             b64 = base64.standard_b64encode(response.content).decode("ascii")
             return f"data:{raw_ct};base64,{b64}"
         except Exception:
-            LOGGER.debug("No se pudo incrustar URL como data URI: %s", url, exc_info=True)
+            LOGGER.debug("Could not embed URL as data URI: %s", url, exc_info=True)
             return None
 
     async def fetch_user_profile(self, username: str) -> GithubUserProfile:
@@ -189,7 +189,7 @@ class GithubGraphqlClient:
         data = await self._execute_query(PROFILE_QUERY, {"login": username})
         user_data = data.get("user")
         if user_data is None:
-            raise GithubUserNotFound(f"El usuario '{username}' no existe en GitHub.")
+            raise GithubUserNotFound(f"GitHub user '{username}' does not exist.")
 
         return GithubUserProfile(
             name=user_data.get("name"),
@@ -264,7 +264,7 @@ class GithubGraphqlClient:
         data = await self._execute_query(CONTRIBUTION_RANGE_QUERY, variables)
         user_data = data.get("user")
         if user_data is None:
-            raise GithubUserNotFound(f"El usuario '{username}' no existe en GitHub.")
+            raise GithubUserNotFound(f"GitHub user '{username}' does not exist.")
 
         contribution_total = (
             user_data.get("contributionsCollection", {})
@@ -303,7 +303,7 @@ class GithubGraphqlClient:
         data = await self._execute_query(CONTRIBUTION_CALENDAR_WEEKS_QUERY, variables)
         user_payload = data.get("user")
         if user_payload is None:
-            raise GithubUserNotFound(f"El usuario '{username}' no existe en GitHub.")
+            raise GithubUserNotFound(f"GitHub user '{username}' does not exist.")
 
         count_by_calendar_day = self._calendar_weeks_to_day_counts(user_payload)
 
@@ -372,7 +372,7 @@ class GithubGraphqlClient:
         for data in results:
             user_payload = data.get("user")
             if user_payload is None:
-                raise GithubUserNotFound(f"El usuario '{username}' no existe en GitHub.")
+                raise GithubUserNotFound(f"GitHub user '{username}' does not exist.")
             merged.update(self._calendar_weeks_to_day_counts(user_payload))
 
         return merged
@@ -394,7 +394,7 @@ class GithubGraphqlClient:
         data = await self._execute_query(GITHUB_CARD_CONTRIBUTIONS_SLICE_QUERY, variables)
         user_payload = data.get("user")
         if user_payload is None:
-            raise GithubUserNotFound(f"El usuario '{username}' no existe en GitHub.")
+            raise GithubUserNotFound(f"GitHub user '{username}' does not exist.")
         cc = user_payload.get("contributionsCollection") or {}
         return (
             int(cc.get("totalCommitContributions") or 0),
@@ -445,7 +445,7 @@ class GithubGraphqlClient:
         data = await self._execute_query(GITHUB_CARD_TOP_REPOS_QUERY, repo_vars)
         user_payload = data.get("user")
         if user_payload is None:
-            raise GithubUserNotFound(f"El usuario '{username}' no existe en GitHub.")
+            raise GithubUserNotFound(f"GitHub user '{username}' does not exist.")
 
         repo_nodes = (user_payload.get("repositories") or {}).get("nodes") or []
         top: list[GithubTopRepo] = []
@@ -504,7 +504,7 @@ class GithubGraphqlClient:
             data = await self._execute_query(REPO_LANGUAGES_PAGE_QUERY, variables)
             user_payload = data.get("user")
             if user_payload is None:
-                raise GithubUserNotFound(f"El usuario '{username}' no existe en GitHub.")
+                raise GithubUserNotFound(f"GitHub user '{username}' does not exist.")
 
             repo_conn = user_payload.get("repositories", {})
             for node in repo_conn.get("nodes", []):
@@ -566,16 +566,16 @@ class GithubGraphqlClient:
         try:
             response = await self._http_client.post(self._api_url, json=payload)
         except httpx.HTTPError as exc:
-            LOGGER.exception("Error de red consultando GitHub GraphQL: %s", exc)
-            raise GithubApiError("No se pudo conectar con GitHub GraphQL API.") from exc
+            LOGGER.exception("Network error calling GitHub GraphQL: %s", exc)
+            raise GithubApiError("Could not reach GitHub GraphQL API.") from exc
 
         if response.status_code == 401:
-            raise GithubApiError("Token de GitHub inválido o ausente para GraphQL API.")
+            raise GithubApiError("Invalid or missing GitHub token for GraphQL API.")
         if response.status_code == 403:
-            raise GithubRateLimitError("GitHub API limitó temporalmente la solicitud.")
+            raise GithubRateLimitError("The GitHub API temporarily limited this request.")
         if response.status_code >= 400:
             raise GithubApiError(
-                f"GitHub GraphQL respondió con estado inesperado: {response.status_code}."
+                f"GitHub GraphQL returned unexpected status {response.status_code}."
             )
 
         raw_payload: dict[str, Any] = response.json()
@@ -583,15 +583,15 @@ class GithubGraphqlClient:
         if errors:
             joined_messages = " | ".join(str(err.get("message", "")) for err in errors)
             if "Could not resolve to a User" in joined_messages:
-                raise GithubUserNotFound("No se encontró el usuario en GitHub.")
+                raise GithubUserNotFound("User not found on GitHub.")
             if "rate limit" in joined_messages.lower():
-                raise GithubRateLimitError("GitHub GraphQL alcanzó el límite de consumo.")
+                raise GithubRateLimitError("GitHub GraphQL rate limit exceeded.")
 
             LOGGER.error("GraphQL errors: %s", joined_messages)
-            raise GithubApiError(f"GitHub GraphQL devolvió errores: {joined_messages}")
+            raise GithubApiError(f"GitHub GraphQL returned errors: {joined_messages}")
 
         data = raw_payload.get("data")
         if not isinstance(data, dict):
-            raise GithubApiError("Respuesta inválida de GitHub GraphQL (sin campo data).")
+            raise GithubApiError("Invalid GitHub GraphQL response (missing data field).")
         return data
 

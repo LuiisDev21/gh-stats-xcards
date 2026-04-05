@@ -28,7 +28,7 @@ def normalize_hex_color(value: str | None) -> str | None:
         return None
     candidate = value.strip()
     if not HEX_COLOR_RE.match(candidate):
-        raise ValueError(f"Color inválido: '{value}'. Usa formato #RRGGBB.")
+        raise ValueError(f"Invalid color: '{value}'. Use #RRGGBB format.")
     return candidate if candidate.startswith("#") else f"#{candidate}"
 
 
@@ -64,7 +64,7 @@ def build_cache_key(parts: dict[str, Any]) -> str:
 def _hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
     raw = hex_color.strip().lstrip("#")
     if len(raw) != 6:
-        msg = f"Color hex inválido (se esperan 6 dígitos): '{hex_color}'"
+        msg = f"Invalid hex color (expected 6 digits): '{hex_color}'"
         raise ValueError(msg)
     return int(raw[0:2], 16), int(raw[2:4], 16), int(raw[4:6], 16)
 

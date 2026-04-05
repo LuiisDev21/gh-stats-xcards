@@ -28,8 +28,8 @@ class SvgTemplateRenderer:
         """
 
         self._templates_dir = templates_dir
-        # Las plantillas son *.jinja2: sin autoescape, & en URLs (avatar) o en nombres
-        # rompe el XML al abrir el SVG como documento (EntityRef: expecting ';').
+        # Templates are *.jinja2 with autoescape off: & in URLs (avatars) or names
+        # breaks XML when the SVG is parsed as a document (EntityRef: expecting ';').
         self._env = Environment(
             loader=FileSystemLoader(str(templates_dir)),
             autoescape=select_autoescape(enabled_extensions=("jinja2", "xml", "html")),
@@ -52,11 +52,11 @@ class SvgTemplateRenderer:
             template = self._env.get_template(template_name)
         except TemplateNotFound as exc:
             raise TemplateRenderError(
-                f"No se encontró la plantilla SVG '{template_name}' en '{self._templates_dir}'."
+                f"SVG template '{template_name}' not found in '{self._templates_dir}'."
             ) from exc
 
         try:
             return template.render(**context)
         except Exception as exc:  # noqa: BLE001
-            raise TemplateRenderError(f"Error renderizando SVG '{template_name}'.") from exc
+            raise TemplateRenderError(f"Error rendering SVG '{template_name}'.") from exc
 

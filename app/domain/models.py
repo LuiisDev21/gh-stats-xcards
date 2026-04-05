@@ -100,8 +100,8 @@ class StatsRequestOptions(BaseModel):
             keys = sorted(THEMES_BY_SLUG.keys())
             sample = ", ".join(keys[:24])
             raise ValueError(
-                f"Tema desconocido: '{v}'. Hay {len(keys)} temas (p. ej. {sample}, …). "
-                "Lista completa: GET /themes"
+                f"Unknown theme: '{v}'. There are {len(keys)} themes (e.g. {sample}, …). "
+                "Full list: GET /themes"
             )
         return v
 
