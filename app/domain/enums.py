@@ -12,6 +12,7 @@ class CardType(str, Enum):
     GITHUB_FOOTER = "github-footer"
     CONTRIBUTION_GRAPH = "contribution-graph"
     TOP_LANGUAGES = "top-languages"
+    STREAK = "streak"
 
     @property
     def template_name(self) -> str:
@@ -24,19 +25,7 @@ class CardType(str, Enum):
             CardType.GITHUB_FOOTER: "github_card_footer.jinja2",
             CardType.CONTRIBUTION_GRAPH: "contribution_graph.jinja2",
             CardType.TOP_LANGUAGES: "top_languages.jinja2",
+            CardType.STREAK: "streak_card.jinja2",
         }
         return mapping[self]
-
-
-class ThemeName(str, Enum):
-    """Supported built-in theme names."""
-
-    DEFAULT = "default"
-    DARK = "dark"
-    TOKYONIGHT = "tokyonight"
-    RADICAL = "radical"
-    DRACULA = "dracula"
-    VISION_FRIENDLY_DARK = "vision-friendly-dark"
-    MINIMALIST = "minimalist"
-    VUE = "vue"
 

@@ -3,80 +3,157 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>GitHub Stats — Vista previa</title>
+    <title>GitHub Stats xCards — Vista previa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap"
+      rel="stylesheet"
+    />
     <style>
       :root {
-        color-scheme: dark light;
-        --bg: #0d1117;
-        --panel: #161b22;
-        --border: #30363d;
-        --text: #e6edf3;
-        --muted: #8b949e;
-        --accent: #58a6ff;
-        --danger: #f85149;
-      }
-      @media (prefers-color-scheme: light) {
-        :root {
-          --bg: #f6f8fa;
-          --panel: #ffffff;
-          --border: #d0d7de;
-          --text: #24292f;
-          --muted: #57606a;
-          --accent: #0969da;
-          --danger: #cf222e;
-        }
+        color-scheme: dark;
+        --bg-deep: #0b0f19;
+        --teal: #4fd1c5;
+        --sky: #63b3ed;
+        --ice: #90cdf4;
+        --text: #f7fafc;
+        --muted: #a0aec0;
+        --glass: rgba(255, 255, 255, 0.06);
+        --glass-border: rgba(255, 255, 255, 0.12);
+        --glass-inset: rgba(255, 255, 255, 0.07);
+        --input-bg: rgba(7, 10, 18, 0.55);
+        --danger: #fc8181;
       }
       * {
         box-sizing: border-box;
       }
       body {
         margin: 0;
-        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-        background: var(--bg);
+        min-height: 100vh;
+        font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+        background-color: var(--bg-deep);
+        background-image:
+          radial-gradient(ellipse 85% 55% at 50% -15%, rgba(79, 209, 197, 0.22), transparent 55%),
+          radial-gradient(ellipse 50% 40% at 100% 30%, rgba(99, 179, 237, 0.14), transparent),
+          radial-gradient(ellipse 45% 35% at 0% 85%, rgba(79, 209, 197, 0.1), transparent);
+        background-attachment: fixed;
         color: var(--text);
-        line-height: 1.5;
+        line-height: 1.55;
       }
       .wrap {
-        max-width: 960px;
+        position: relative;
+        max-width: 980px;
         margin: 0 auto;
-        padding: 1.5rem 1rem 3rem;
+        padding: 2rem 1.15rem 3.5rem;
       }
-      h1 {
-        font-size: 1.35rem;
-        font-weight: 650;
-        margin: 0 0 1.25rem;
+      .hero {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      .hero-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin: 0 0 0.75rem;
+        padding: 0.35rem 0.85rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+        background: var(--glass);
+        backdrop-filter: blur(16px) saturate(150%);
+        -webkit-backdrop-filter: blur(16px) saturate(150%);
+        border: 1px solid var(--glass-border);
+        border-radius: 999px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+      }
+      .hero-kicker::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--teal), var(--sky));
+        box-shadow: 0 0 12px rgba(79, 209, 197, 0.7);
+      }
+      .hero-title {
+        font-size: clamp(1.65rem, 4.5vw, 2.35rem);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.15;
+        margin: 0 0 0.65rem;
+      }
+      .gradient-text {
+        background: linear-gradient(100deg, var(--teal) 0%, var(--sky) 52%, var(--ice) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .hero-sub {
+        margin: 0 auto;
+        max-width: 36rem;
+        font-size: 0.95rem;
+        color: var(--muted);
+        font-weight: 500;
       }
       .grid {
         display: grid;
-        gap: 1.25rem;
+        gap: 1.35rem;
       }
       @media (min-width: 820px) {
         .grid {
-          grid-template-columns: 320px 1fr;
+          grid-template-columns: minmax(280px, 340px) 1fr;
           align-items: start;
         }
       }
       .card {
-        background: var(--panel);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 1rem 1rem 1.1rem;
+        background: var(--glass);
+        backdrop-filter: blur(22px) saturate(165%);
+        -webkit-backdrop-filter: blur(22px) saturate(165%);
+        border: 1px solid var(--glass-border);
+        border-radius: 22px;
+        padding: 1.25rem 1.3rem 1.35rem;
+        box-shadow:
+          0 8px 40px rgba(0, 0, 0, 0.35),
+          inset 0 1px 0 var(--glass-inset);
+      }
+      .card--preview {
+        position: relative;
+        overflow: hidden;
+      }
+      .card--preview::before {
+        content: "";
+        position: absolute;
+        inset: -40% 20% auto;
+        height: 70%;
+        background: radial-gradient(circle, rgba(79, 209, 197, 0.12), transparent 65%);
+        pointer-events: none;
       }
       label {
         display: block;
-        font-size: 0.8rem;
+        font-size: 0.78rem;
+        font-weight: 500;
         color: var(--muted);
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.35rem;
       }
       input[type="text"],
       select {
         width: 100%;
-        padding: 0.5rem 0.6rem;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        background: var(--bg);
+        padding: 0.55rem 0.75rem;
+        border-radius: 12px;
+        border: 1px solid var(--glass-border);
+        background: var(--input-bg);
         color: var(--text);
-        font-size: 0.95rem;
+        font-size: 0.92rem;
+        font-family: inherit;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      }
+      input[type="text"]:focus,
+      select:focus {
+        outline: none;
+        border-color: rgba(79, 209, 197, 0.45);
+        box-shadow: 0 0 0 3px rgba(79, 209, 197, 0.12);
       }
       .row {
         display: flex;
@@ -92,51 +169,72 @@
         display: flex;
         gap: 1rem;
         align-items: center;
-        margin: 0.75rem 0 1rem;
+        margin: 0.85rem 0 1rem;
         flex-wrap: wrap;
       }
       .checks label {
         display: flex;
-        gap: 0.4rem;
+        gap: 0.45rem;
         align-items: center;
         margin: 0;
         color: var(--text);
-        font-size: 0.9rem;
+        font-size: 0.88rem;
+      }
+      .checks input {
+        accent-color: var(--teal);
       }
       button {
         appearance: none;
-        border: 1px solid var(--border);
-        background: var(--accent);
-        color: #ffffff;
-        font-weight: 600;
-        padding: 0.55rem 0.9rem;
-        border-radius: 8px;
+        border: none;
+        background: linear-gradient(135deg, #319795 0%, var(--teal) 42%, var(--sky) 100%);
+        color: #0b0f19;
+        font-weight: 700;
+        font-family: inherit;
+        padding: 0.62rem 1.1rem;
+        border-radius: 12px;
         cursor: pointer;
-        font-size: 0.95rem;
+        font-size: 0.92rem;
+        box-shadow: 0 6px 24px rgba(79, 209, 197, 0.35);
+        transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
       }
       button:hover {
-        filter: brightness(1.06);
+        filter: brightness(1.05);
+        box-shadow: 0 8px 28px rgba(79, 209, 169, 0.42);
+        transform: translateY(-1px);
+      }
+      button:active {
+        transform: translateY(0);
       }
       button.secondary {
-        background: transparent;
+        background: rgba(255, 255, 255, 0.06);
         color: var(--text);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        box-shadow: none;
+        font-weight: 600;
+      }
+      button.secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.3);
+        filter: none;
       }
       .actions {
         display: flex;
-        gap: 0.5rem;
+        gap: 0.55rem;
         flex-wrap: wrap;
-        margin-top: 0.5rem;
+        margin-top: 0.65rem;
       }
       .embed-box {
-        margin-top: 1rem;
-        padding-top: 0.9rem;
-        border-top: 1px solid var(--border);
+        margin-top: 1.15rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--glass-border);
       }
       .embed-box h2 {
-        font-size: 0.85rem;
-        font-weight: 650;
+        font-size: 0.82rem;
+        font-weight: 700;
         margin: 0 0 0.5rem;
         color: var(--muted);
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
       }
       .embed-row {
         margin-bottom: 0.85rem;
@@ -151,15 +249,16 @@
       .embed-row .row-head span {
         font-size: 0.8rem;
         color: var(--muted);
+        font-weight: 500;
       }
       .embed-snippet {
         margin: 0;
-        padding: 0.5rem 0.55rem;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        background: var(--bg);
-        color: var(--text);
-        font-family: ui-monospace, monospace;
+        padding: 0.55rem 0.65rem;
+        border-radius: 12px;
+        border: 1px solid var(--glass-border);
+        background: rgba(7, 10, 18, 0.65);
+        color: #e2e8f0;
+        font-family: ui-monospace, "Cascadia Code", monospace;
         font-size: 0.72rem;
         line-height: 1.45;
         white-space: pre-wrap;
@@ -168,27 +267,40 @@
         overflow: auto;
       }
       .embed-row button.copy-btn {
-        padding: 0.35rem 0.55rem;
-        font-size: 0.78rem;
+        padding: 0.38rem 0.6rem;
+        font-size: 0.76rem;
       }
       .preview {
+        position: relative;
+        z-index: 1;
         min-height: 240px;
         display: flex;
         align-items: flex-start;
         justify-content: center;
-        padding: 0.5rem;
+        padding: 0.65rem;
         overflow: visible;
+        border-radius: 14px;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.06);
       }
       .preview svg {
         max-width: 100%;
         height: auto;
         display: block;
         overflow: visible;
+        filter: drop-shadow(0 12px 32px rgba(0, 0, 0, 0.45));
+      }
+      #theme {
+        max-width: 100%;
+        font-size: 0.85rem;
       }
       .status {
-        font-size: 0.85rem;
-        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+        font-size: 0.88rem;
+        margin-bottom: 0.6rem;
         color: var(--muted);
+        font-weight: 500;
       }
       .status.err {
         color: var(--danger);
@@ -200,18 +312,42 @@
         color: var(--danger);
       }
       details {
-        margin-top: 0.75rem;
+        margin-top: 0.85rem;
       }
       summary {
         cursor: pointer;
         color: var(--muted);
-        font-size: 0.85rem;
+        font-size: 0.86rem;
+        font-weight: 500;
+        padding: 0.35rem 0;
+        list-style: none;
+      }
+      summary::-webkit-details-marker {
+        display: none;
+      }
+      summary::after {
+        content: "▸";
+        display: inline-block;
+        margin-left: 0.35rem;
+        transition: transform 0.2s ease;
+        color: var(--teal);
+      }
+      details[open] summary::after {
+        transform: rotate(90deg);
       }
     </style>
   </head>
   <body>
     <div class="wrap">
-      <h1>Tarjeta GitHub Stats</h1>
+      <header class="hero">
+        <p class="hero-kicker">Vista previa</p>
+        <h1 class="hero-title">
+          <span class="gradient-text">GitHub Stats xCards</span>
+        </h1>
+        <p class="hero-sub">
+          Genera tarjetas SVG con tu actividad de GitHub: nivel, racha, repos y más.
+        </p>
+      </header>
 
       <div class="grid">
         <div class="card">
@@ -233,15 +369,11 @@
               <div>
                 <label for="theme">Tema</label>
                 <select id="theme" name="theme">
-                  <option value="default">default</option>
-                  <option value="dark" selected>dark</option>
-                  <option value="tokyonight">tokyonight</option>
-                  <option value="radical">radical</option>
-                  <option value="dracula">dracula</option>
-                  <option value="vision-friendly-dark">vision-friendly-dark</option>
-                  <option value="minimalist">minimalist</option>
-                  <option value="vue">vue</option>
+                  <option value="dark">dark</option>
                 </select>
+                <p class="hint" style="margin-top: 0.35rem; font-size: 0.78rem; color: var(--muted)">
+                  Opciones desde <code>/themes</code> (catálogo interno del proyecto).
+                </p>
               </div>
               <div>
                 <label for="card">Tarjeta</label>
@@ -251,6 +383,7 @@
                   <option value="github">github</option>
                   <option value="github-footer">github-footer</option>
                   <option value="contribution-graph">contribution-graph</option>
+                  <option value="streak">streak</option>
                   <option value="top-languages">top-languages</option>
                 </select>
               </div>
@@ -333,7 +466,7 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card card--preview">
           <div id="status" class="status">Listo. Pulsa «Cargar tarjeta».</div>
           <div id="preview" class="preview" aria-live="polite"></div>
         </div>
@@ -360,6 +493,61 @@
         const embedMdPre = document.getElementById("embed-md");
         /** @type {HTMLElement} */
         const embedHtmlPre = document.getElementById("embed-html");
+
+        const FALLBACK_THEMES = [
+          "dark",
+          "default",
+          "tokyonight",
+          "dracula",
+          "radical",
+          "highcontrast",
+          "minimalist",
+          "vue",
+          "vue-dark",
+          "gruvbox",
+          "onedark",
+          "shades-of-purple",
+          "nightowl",
+          "catppuccin-frappe",
+          "solarized-dark",
+          "vision-friendly-dark",
+        ];
+
+        /**
+         * Rellena el desplegable de temas desde GET /themes.
+         * @returns {Promise<void>}
+         */
+        async function populateThemeSelect() {
+          const sel = /** @type {HTMLSelectElement} */ (document.getElementById("theme"));
+          const fromUrl = new URLSearchParams(window.location.search).get("theme");
+          const previous = (sel.value || fromUrl || "dark").trim().toLowerCase().replace(/_/g, "-");
+          let slugs = FALLBACK_THEMES.slice();
+          try {
+            const res = await fetch(new URL("/themes", getApiOrigin() + "/").href, {
+              headers: { Accept: "application/json" },
+            });
+            if (res.ok) {
+              const data = await res.json();
+              if (data && Array.isArray(data.themes) && data.themes.length) {
+                slugs = data.themes;
+              }
+            }
+          } catch (e) {
+            /* fallback */
+          }
+          sel.innerHTML = "";
+          slugs.forEach(function (slug) {
+            const opt = document.createElement("option");
+            opt.value = slug;
+            opt.textContent = slug;
+            sel.appendChild(opt);
+          });
+          if (slugs.indexOf(previous) !== -1) {
+            sel.value = previous;
+          } else {
+            sel.value = slugs.indexOf("dark") !== -1 ? "dark" : slugs[0];
+          }
+        }
 
         /** @returns {boolean} */
         function isFileOrOpaqueOrigin() {
@@ -471,7 +659,7 @@
 
           const imgUrl = toAbsoluteApiUrl(buildStatsPath());
           const pageUrl = buildGeneratorPageUrl();
-          const alt = usernameRaw + "'s GitHub Stats";
+          const alt = usernameRaw + "'s GitHub Stats xCards";
           const md = "[![" + alt + "](" + imgUrl + ")](" + pageUrl + ")";
           const html =
             '<a href="' +
@@ -575,21 +763,39 @@
         }
 
         /**
-         * Reinicia animaciones SMIL y CSS tras cargar recursos (p. ej. avatar).
+         * Reinicia animaciones SMIL del SVG. No toca animaciones CSS:
+         * al forzar `style.animation = ''` se pierde el `animation` del atributo style inicial
+         * y queda solo `opacity: 0` (p. ej. tarjeta streak) → vista previa en blanco.
          * @param {SVGSVGElement} svg
          */
         function restartPreviewAnimations(svg) {
           if (typeof svg.setCurrentTime === "function") {
             svg.setCurrentTime(0);
           }
-          svg.querySelectorAll("*").forEach(function (el) {
-            var cs = window.getComputedStyle(el);
-            if (cs.animationName && cs.animationName !== "none") {
-              el.style.animation = "none";
-              void el.getBoundingClientRect();
-              el.style.animation = "";
+        }
+
+        /**
+         * Inserta el marcado SVG en #preview con namespace correcto (DOMParser XML).
+         * Si el XML no parsea, usa innerHTML como respaldo.
+         * @param {string} body
+         * @returns {SVGSVGElement | null}
+         */
+        function mountSvgInPreview(body) {
+          preview.innerHTML = "";
+          try {
+            const parsed = new DOMParser().parseFromString(body, "image/svg+xml");
+            const bad = parsed.querySelector("parsererror");
+            const root = parsed.documentElement;
+            if (!bad && root && root.nodeName.toLowerCase() === "svg") {
+              const node = document.importNode(root, true);
+              preview.appendChild(node);
+              return preview.querySelector("svg");
             }
-          });
+          } catch (e) {
+            /* innerHTML fallback below */
+          }
+          preview.innerHTML = body;
+          return preview.querySelector("svg");
         }
 
         /**
@@ -618,9 +824,8 @@
               if ((res.headers.get("x-cache-hit") || "").toLowerCase() === "true") {
                 skipMsg = " · desde caché";
               }
-              preview.innerHTML = body;
               /** @type {SVGSVGElement | null} */
-              const svg = preview.querySelector("svg");
+              const svg = mountSvgInPreview(body);
               if (svg) {
                 await whenSvgImagesLoaded(svg);
                 await new Promise(function (resolve) {
@@ -673,8 +878,15 @@
           });
         });
 
-        hydrateFormFromLocation();
-        updateEmbedSnippets();
+        populateThemeSelect()
+          .then(function () {
+            hydrateFormFromLocation();
+            updateEmbedSnippets();
+          })
+          .catch(function () {
+            hydrateFormFromLocation();
+            updateEmbedSnippets();
+          });
       })();
     </script>
   </body>

@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 
 from app.api.v1.stats_router import router as stats_router
+from app.domain.theme_registry import THEMES_BY_SLUG
 from app.core.config import get_settings
 from app.core.exceptions import AppError, app_error_exception_handler
 from app.infrastructure.cache import StatsCache
@@ -90,4 +91,11 @@ async def healthcheck() -> dict[str, str]:
     """Basic health endpoint."""
 
     return {"status": "ok", "service": settings.app_name, "version": settings.app_version}
+
+
+@app.get("/themes", response_class=JSONResponse)
+async def list_theme_slugs() -> dict[str, list[str]]:
+    """Sorted theme slugs for UI and docs (compatible with github-readme-streak-stats palettes)."""
+
+    return {"themes": sorted(THEMES_BY_SLUG.keys()), "count": len(THEMES_BY_SLUG)}
 

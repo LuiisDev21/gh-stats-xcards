@@ -2,9 +2,9 @@
 
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from app.domain.enums import CardType, ThemeName
+from app.domain.enums import CardType
 
 
 class ThemeTokens(BaseModel):
@@ -71,7 +71,7 @@ class StatsRequestOptions(BaseModel):
 
     username: str
     card_type: CardType = CardType.LEVEL
-    theme_name: ThemeName = ThemeName.DARK
+    theme_name: str = Field(default="dark", min_length=1, max_length=80)
     show_avatar: bool = True
     hide_border: bool = False
     bg_color: str | None = None
@@ -80,6 +80,30 @@ class StatsRequestOptions(BaseModel):
     icon_color: str | None = None
     border_color: str | None = None
     accent_color: str | None = None
+
+    @field_validator("theme_name", mode="before")
+    @classmethod
+    def _normalize_theme_slug(cls, v: object) -> str:
+        if v is None:
+            return "dark"
+        if hasattr(v, "value"):
+            v = getattr(v, "value", v)
+        s = str(v).strip().lower().replace("_", "-")
+        return s
+
+    @field_validator("theme_name")
+    @classmethod
+    def _theme_must_exist(cls, v: str) -> str:
+        from app.domain.theme_registry import THEMES_BY_SLUG
+
+        if v not in THEMES_BY_SLUG:
+            keys = sorted(THEMES_BY_SLUG.keys())
+            sample = ", ".join(keys[:24])
+            raise ValueError(
+                f"Tema desconocido: '{v}'. Hay {len(keys)} temas (p. ej. {sample}, …). "
+                "Lista completa: GET /themes"
+            )
+        return v
 
 
 class CardRenderResult(BaseModel):
@@ -130,72 +154,4 @@ class GithubCardActivity(BaseModel):
     total_pull_request_contributions: int = Field(ge=0)
     total_issue_contributions: int = Field(ge=0)
     top_repos: tuple[GithubTopRepo, ...] = ()
-
-
-THEMES: dict[ThemeName, ThemeTokens] = {
-    ThemeName.DEFAULT: ThemeTokens(
-        bg_color="#ffffff",
-        title_color="#24292f",
-        text_color="#57606a",
-        icon_color="#0969da",
-        border_color="#d0d7de",
-        accent_color="#1f6feb",
-    ),
-    ThemeName.DARK: ThemeTokens(
-        bg_color="#0d1117",
-        title_color="#58a6ff",
-        text_color="#c9d1d9",
-        icon_color="#8b949e",
-        border_color="#30363d",
-        accent_color="#2f81f7",
-    ),
-    ThemeName.TOKYONIGHT: ThemeTokens(
-        bg_color="#1a1b27",
-        title_color="#70a5fd",
-        text_color="#a9b1d6",
-        icon_color="#bf91f3",
-        border_color="#2f334d",
-        accent_color="#7aa2f7",
-    ),
-    ThemeName.RADICAL: ThemeTokens(
-        bg_color="#141321",
-        title_color="#fe428e",
-        text_color="#a9fef7",
-        icon_color="#f8d847",
-        border_color="#332f57",
-        accent_color="#f8d847",
-    ),
-    ThemeName.DRACULA: ThemeTokens(
-        bg_color="#282a36",
-        title_color="#ff79c6",
-        text_color="#f8f8f2",
-        icon_color="#bd93f9",
-        border_color="#44475a",
-        accent_color="#50fa7b",
-    ),
-    ThemeName.VISION_FRIENDLY_DARK: ThemeTokens(
-        bg_color="#0f0f0f",
-        title_color="#ffb000",
-        text_color="#e6edf3",
-        icon_color="#79c0ff",
-        border_color="#3d444d",
-        accent_color="#ffd33d",
-    ),
-    ThemeName.MINIMALIST: ThemeTokens(
-        bg_color="#ffffff",
-        title_color="#000000",
-        text_color="#000000",
-        icon_color="#000000",
-        border_color="#000000",
-        accent_color="#000000",
-    ),
-    ThemeName.VUE: ThemeTokens(
-        bg_color="#15251f",
-        title_color="#42d392",
-        text_color="#c8e6d0",
-        icon_color="#6fd9a8",
-        border_color="#2a4d41",
-        accent_color="#42b883",
-    ),
-}
 

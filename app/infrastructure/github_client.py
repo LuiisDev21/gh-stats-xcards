@@ -285,16 +285,7 @@ class GithubGraphqlClient:
         if user_payload is None:
             raise GithubUserNotFound(f"El usuario '{username}' no existe en GitHub.")
 
-        count_by_calendar_day: dict[str, int] = {}
-        weeks = (
-            user_payload.get("contributionsCollection", {})
-            .get("contributionCalendar", {})
-            .get("weeks", [])
-        )
-        for week in weeks:
-            for day_entry in week.get("contributionDays", []):
-                day_key = str(day_entry.get("date", ""))[:10]
-                count_by_calendar_day[day_key] = int(day_entry.get("contributionCount", 0))
+        count_by_calendar_day = self._calendar_weeks_to_day_counts(user_payload)
 
         series: list[ContributionGraphDay] = []
         for offset in range(num_days):
@@ -307,6 +298,64 @@ class GithubGraphqlClient:
                 )
             )
         return series
+
+    @staticmethod
+    def _calendar_weeks_to_day_counts(user_payload: dict[str, Any]) -> dict[str, int]:
+        """Flatten ``contributionCalendar.weeks`` into ``YYYY-MM-DD -> count``."""
+
+        count_by_calendar_day: dict[str, int] = {}
+        weeks = (
+            user_payload.get("contributionsCollection", {})
+            .get("contributionCalendar", {})
+            .get("weeks", [])
+        )
+        for week in weeks:
+            for day_entry in week.get("contributionDays", []):
+                day_key = str(day_entry.get("date", ""))[:10]
+                count_by_calendar_day[day_key] = int(day_entry.get("contributionCount", 0))
+        return count_by_calendar_day
+
+    async def fetch_contribution_days_map(
+        self,
+        *,
+        username: str,
+        account_created_at: datetime,
+    ) -> dict[str, int]:
+        """Per-day contribution counts from account creation through today (UTC).
+
+        Merges calendar slices of at most one calendar year each (GitHub API limit).
+        """
+
+        now_utc = datetime.now(UTC)
+        end_d = now_utc.date()
+        start_d = account_created_at.astimezone(UTC).date()
+        merged: dict[str, int] = {}
+
+        coros: list[Any] = []
+        for year in range(start_d.year, end_d.year + 1):
+            year_start = date(year, 1, 1)
+            year_end = date(year, 12, 31)
+            chunk_from = max(start_d, year_start)
+            chunk_to = min(end_d, year_end)
+            if chunk_from > chunk_to:
+                continue
+            from_dt = datetime.combine(chunk_from, time.min, tzinfo=UTC)
+            to_dt = datetime.combine(chunk_to, time(23, 59, 59), tzinfo=UTC)
+            variables = {
+                "login": username,
+                "from": from_dt.isoformat().replace("+00:00", "Z"),
+                "to": to_dt.isoformat().replace("+00:00", "Z"),
+            }
+            coros.append(self._execute_query(CONTRIBUTION_CALENDAR_WEEKS_QUERY, variables))
+
+        results = await asyncio.gather(*coros) if coros else []
+        for data in results:
+            user_payload = data.get("user")
+            if user_payload is None:
+                raise GithubUserNotFound(f"El usuario '{username}' no existe en GitHub.")
+            merged.update(self._calendar_weeks_to_day_counts(user_payload))
+
+        return merged
 
     async def _fetch_github_card_contribution_slice(
         self,

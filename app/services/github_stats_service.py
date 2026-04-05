@@ -4,22 +4,24 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
+from datetime import UTC, date, datetime
 from typing import Any
 
 from app.core.config import Settings
-from app.domain.enums import CardType, ThemeName
+from app.domain.enums import CardType
 from app.domain.models import (
     CardRenderResult,
     ContributionGraphDay,
     GithubCardActivity,
+    GithubContributionStats,
     GithubUserProfile,
     GithubUserStats,
     LanguageSlice,
     LevelInfo,
     StatsRequestOptions,
-    THEMES,
     ThemeTokens,
 )
+from app.domain.theme_registry import THEMES_BY_SLUG
 from app.infrastructure.cache import StatsCache
 from app.infrastructure.github_client import GithubGraphqlClient
 from app.infrastructure.svg_templates import SvgTemplateRenderer
@@ -34,6 +36,12 @@ from app.utils.helpers import (
     compute_progress_width,
     donut_palette_for_theme,
     merge_theme_overrides,
+)
+from app.utils.streak_helpers import (
+    StreakMetrics,
+    compute_streak_metrics,
+    format_long_date,
+    format_streak_range,
 )
 
 
@@ -112,6 +120,31 @@ class GithubStatsService:
                 theme=theme,
                 options=options,
             )
+        elif options.card_type == CardType.STREAK:
+            profile = await self._github_client.fetch_user_profile(options.username)
+            contributions = await self._github_client.fetch_contribution_stats(
+                username=options.username,
+                account_created_at=profile.created_at,
+            )
+            day_map = await self._github_client.fetch_contribution_days_map(
+                username=options.username,
+                account_created_at=profile.created_at,
+            )
+            account_start = profile.created_at.astimezone(UTC).date()
+            today = datetime.now(UTC).date()
+            metrics = compute_streak_metrics(
+                day_map,
+                account_start=account_start,
+                today=today,
+            )
+            context = self._build_streak_card_context(
+                profile=profile,
+                contributions=contributions,
+                metrics=metrics,
+                day_map=day_map,
+                theme=theme,
+                options=options,
+            )
         elif options.card_type in (CardType.GITHUB, CardType.GITHUB_FOOTER):
             profile = await self._github_client.fetch_user_profile(options.username)
             contributions = await self._github_client.fetch_contribution_stats(
@@ -164,7 +197,7 @@ class GithubStatsService:
     def _is_minimalist(self, options: StatsRequestOptions) -> bool:
         """Return True when the minimalist theme is selected."""
 
-        return options.theme_name == ThemeName.MINIMALIST
+        return options.theme_name == "minimalist"
 
     def _outer_corner_radius(self, options: StatsRequestOptions) -> int:
         """Border radius for the card rectangle (0 for minimalist)."""
@@ -223,7 +256,7 @@ class GithubStatsService:
     def _resolve_theme(self, *, options: StatsRequestOptions) -> ThemeTokens:
         """Apply custom colors on top of selected theme."""
 
-        base_theme = THEMES[options.theme_name]
+        base_theme = THEMES_BY_SLUG[options.theme_name]
         return merge_theme_overrides(
             base_theme=base_theme,
             overrides={
@@ -381,6 +414,116 @@ class GithubStatsService:
             **theme.model_dump(),
         }
 
+    def _first_contribution_date(self, day_map: dict[str, int], fallback: date) -> date:
+        """Earliest calendar day with contributionCount > 0 (GitHub graph semantics)."""
+
+        best: date | None = None
+        for key, count in day_map.items():
+            if count <= 0:
+                continue
+            try:
+                d = date.fromisoformat(key[:10])
+            except ValueError:
+                continue
+            if best is None or d < best:
+                best = d
+        return best if best is not None else fallback
+
+    def _build_streak_card_context(
+        self,
+        *,
+        profile: GithubUserProfile,
+        contributions: GithubContributionStats,
+        metrics: StreakMetrics,
+        day_map: dict[str, int],
+        theme: ThemeTokens,
+        options: StatsRequestOptions,
+    ) -> dict[str, Any]:
+        """Streak card layout aligned with github-readme-streak-stats (three equal columns)."""
+
+        width = float(self._settings.streak_card_width)
+        height = float(self._settings.streak_card_height)
+        h_off = (height - 195.0) / 2.0
+        col_w = width / 3.0
+        total_cx = col_w / 2.0
+        current_cx = col_w / 2.0 + col_w
+        longest_cx = col_w / 2.0 + 2.0 * col_w
+        bar_x0 = col_w
+        bar_x1 = 2.0 * col_w
+        y_bar_top = 28.0 + h_off / 2.0
+        y_bar_bot = 170.0 + h_off
+        y_total = [48.0 + h_off, 84.0 + h_off, 114.0 + h_off]
+        y_curr_num = 48.0 + h_off
+        y_curr_label = 108.0 + h_off
+        y_curr_range = 145.0 + h_off
+        y_ring_cy = 71.0 + h_off
+        y_fire_ty = 19.5 + h_off
+        y_longest = [48.0 + h_off, 84.0 + h_off, 114.0 + h_off]
+
+        border_rx = 0.0 if self._is_minimalist(options) else 4.5
+        account_start = profile.created_at.astimezone(UTC).date()
+        first_contrib = self._first_contribution_date(day_map, account_start)
+        total_range = f"{format_long_date(first_contrib)} - Present"
+        if (
+            metrics.current_streak > 0
+            and metrics.current_start is not None
+            and metrics.current_end is not None
+        ):
+            current_range = format_streak_range(metrics.current_start, metrics.current_end)
+        else:
+            current_range = "—"
+        if (
+            metrics.longest_streak > 0
+            and metrics.longest_start is not None
+            and metrics.longest_end is not None
+        ):
+            longest_range = format_streak_range(metrics.longest_start, metrics.longest_end)
+        else:
+            longest_range = "—"
+
+        stroke_divider = theme.border_color
+        ring_r = 40.0
+
+        return {
+            **theme.model_dump(),
+            "width": int(width),
+            "height": int(height),
+            "border_rx": border_rx,
+            "rect_w": width - 1.0,
+            "rect_h": height - 1.0,
+            "hide_border": options.hide_border,
+            "total_cx": total_cx,
+            "current_cx": current_cx,
+            "longest_cx": longest_cx,
+            "bar_x0": bar_x0,
+            "bar_x1": bar_x1,
+            "y_bar_top": y_bar_top,
+            "y_bar_bot": y_bar_bot,
+            "y_total": y_total,
+            "y_curr_num": y_curr_num,
+            "y_curr_label": y_curr_label,
+            "y_curr_range": y_curr_range,
+            "y_ring_cy": y_ring_cy,
+            "y_fire_ty": y_fire_ty,
+            "y_longest": y_longest,
+            "mask_ellipse_cy": 32.0 + h_off,
+            "ring_r": ring_r,
+            "total_value": f"{contributions.total_contributions_all_time:,}",
+            "total_sub": total_range,
+            "current_value": f"{metrics.current_streak:,}",
+            "current_sub": current_range,
+            "longest_value": f"{metrics.longest_streak:,}",
+            "longest_sub": longest_range,
+            "side_nums": theme.title_color,
+            "side_labels": theme.text_color,
+            "dates_color": theme.icon_color,
+            "curr_streak_label": theme.accent_color,
+            "curr_streak_num": theme.title_color,
+            "ring_color": theme.accent_color,
+            "fire_color": theme.accent_color,
+            "divider_stroke": stroke_divider,
+        }
+
     def _build_contribution_graph_context(
         self,
         *,
@@ -527,7 +670,7 @@ class GithubStatsService:
         inner_r = outer_r * 0.52
 
         fractions = [s.fraction for s in languages]
-        if options.theme_name in (ThemeName.DEFAULT, ThemeName.DARK):
+        if options.theme_name in ("default", "dark"):
             palette = [s.color for s in languages]
         else:
             palette = donut_palette_for_theme(theme, len(languages))

@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Query, Response
 
 from app.core.config import Settings
 from app.core.dependencies import get_app_settings, get_github_stats_service
-from app.domain.enums import CardType, ThemeName
+from app.domain.enums import CardType
 from app.domain.models import StatsRequestOptions
 from app.services.github_stats_service import GithubStatsService
 
@@ -20,7 +20,13 @@ async def get_stats_svg(
         pattern=r"^[a-zA-Z0-9-]+$",
         description="GitHub username",
     ),
-    theme: ThemeName = Query(default=ThemeName.DARK),
+    theme: str = Query(
+        default="dark",
+        min_length=1,
+        max_length=80,
+        pattern=r"^[a-zA-Z0-9][a-zA-Z0-9._-]*$",
+        description="Theme slug (see GET /themes).",
+    ),
     card: CardType = Query(default=CardType.LEVEL),
     show_avatar: bool = Query(default=True),
     hide_border: bool = Query(default=False),

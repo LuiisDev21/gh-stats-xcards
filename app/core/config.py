@@ -34,6 +34,8 @@ class Settings(BaseSettings):
         github_card_top_repos: Number of top public repos to show (by stars).
         github_card_footer_width: Ancho de la tarjeta GitHub horizontal (footer / README).
         github_card_footer_height: Alto de la tarjeta GitHub horizontal.
+        streak_card_width: Width for the contribution streak SVG card.
+        streak_card_height: Height for the contribution streak SVG card.
     """
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
@@ -64,6 +66,8 @@ class Settings(BaseSettings):
     github_card_top_repos: int = 5
     github_card_footer_width: int = 900
     github_card_footer_height: int = 248
+    streak_card_width: int = 495
+    streak_card_height: int = 195
 
 
 @lru_cache(maxsize=1)
