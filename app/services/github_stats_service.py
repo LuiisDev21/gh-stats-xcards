@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import math
 from dataclasses import dataclass
 from datetime import UTC, date, datetime
@@ -80,6 +81,16 @@ class GithubStatsService:
         self._cache = cache
         self._template_renderer = template_renderer
         self._settings = settings
+        self._cache_key_locks_guard = asyncio.Lock()
+        self._cache_key_locks: dict[str, asyncio.Lock] = {}
+
+    async def _get_cache_key_lock(self, cache_key: str) -> asyncio.Lock:
+        async with self._cache_key_locks_guard:
+            lock = self._cache_key_locks.get(cache_key)
+            if lock is None:
+                lock = asyncio.Lock()
+                self._cache_key_locks[cache_key] = lock
+            return lock
 
     async def _avatar_href_for_svg(self, avatar_url: str, show_avatar: bool) -> str:
         """Return avatar URL suitable for ``<image href>`` (data URI when showing avatar)."""
@@ -100,118 +111,129 @@ class GithubStatsService:
         """
 
         cache_key = build_cache_key(options.model_dump())
-        if self._settings.stats_cache_enabled:
+        key_lock: asyncio.Lock | None = None
+        if self._settings.effective_stats_cache_enabled:
             cached_svg = await self._cache.get(cache_key)
             if cached_svg is not None:
                 return CardRenderResult(svg=cached_svg, cache_key=cache_key, cache_hit=True)
+            key_lock = await self._get_cache_key_lock(cache_key)
+            await key_lock.acquire()
+            cached_after_wait = await self._cache.get(cache_key)
+            if cached_after_wait is not None:
+                key_lock.release()
+                return CardRenderResult(svg=cached_after_wait, cache_key=cache_key, cache_hit=True)
 
-        theme = self._resolve_theme(options=options)
+        try:
+            theme = self._resolve_theme(options=options)
 
-        if options.card_type == CardType.CONTRIBUTION_GRAPH:
-            profile = await self._github_client.fetch_user_profile(options.username)
-            days = await self._github_client.fetch_contribution_graph_days(
-                options.username,
-                num_days=30,
-            )
-            context = self._build_contribution_graph_context(
-                profile=profile,
-                days=days,
-                theme=theme,
-                options=options,
-            )
-        elif options.card_type == CardType.TOP_LANGUAGES:
-            profile = await self._github_client.fetch_user_profile(options.username)
-            languages = await self._github_client.fetch_language_slices(options.username)
-            context = self._build_top_languages_context(
-                profile=profile,
-                languages=languages,
-                theme=theme,
-                options=options,
-            )
-        elif options.card_type == CardType.STREAK:
-            profile = await self._github_client.fetch_user_profile(options.username)
-            contributions = await self._github_client.fetch_contribution_stats(
-                username=options.username,
-                account_created_at=profile.created_at,
-            )
-            day_map = await self._github_client.fetch_contribution_days_map(
-                username=options.username,
-                account_created_at=profile.created_at,
-            )
-            account_start = profile.created_at.astimezone(UTC).date()
-            today = datetime.now(UTC).date()
-            metrics = compute_streak_metrics(
-                day_map,
-                account_start=account_start,
-                today=today,
-            )
-            context = self._build_streak_card_context(
-                profile=profile,
-                contributions=contributions,
-                metrics=metrics,
-                day_map=day_map,
-                theme=theme,
-                options=options,
-            )
-        elif options.card_type in (CardType.GITHUB, CardType.GITHUB_FOOTER):
-            profile = await self._github_client.fetch_user_profile(options.username)
-            contributions = await self._github_client.fetch_contribution_stats(
-                username=options.username,
-                account_created_at=profile.created_at,
-            )
-            level_info = self._calculate_level(contributions.total_contributions_all_time)
-            user_stats = GithubUserStats(profile=profile, contributions=contributions, level=level_info)
-            activity = await self._github_client.fetch_github_card_activity(
-                options.username,
-                account_created_at=profile.created_at,
-                top_n_repos=self._settings.github_card_top_repos,
-            )
-            avatar_href = await self._avatar_href_for_svg(
-                user_stats.profile.avatar_url,
-                options.show_avatar,
-            )
-            if options.card_type == CardType.GITHUB_FOOTER:
-                context = self._build_github_card_footer_context(
-                    user_stats=user_stats,
-                    activity=activity,
+            if options.card_type == CardType.CONTRIBUTION_GRAPH:
+                profile = await self._github_client.fetch_user_profile(options.username)
+                days = await self._github_client.fetch_contribution_graph_days(
+                    options.username,
+                    num_days=30,
+                )
+                context = self._build_contribution_graph_context(
+                    profile=profile,
+                    days=days,
                     theme=theme,
                     options=options,
-                    avatar_url=avatar_href,
                 )
+            elif options.card_type == CardType.TOP_LANGUAGES:
+                profile = await self._github_client.fetch_user_profile(options.username)
+                languages = await self._github_client.fetch_language_slices(options.username)
+                context = self._build_top_languages_context(
+                    profile=profile,
+                    languages=languages,
+                    theme=theme,
+                    options=options,
+                )
+            elif options.card_type == CardType.STREAK:
+                profile = await self._github_client.fetch_user_profile(options.username)
+                contributions = await self._github_client.fetch_contribution_stats(
+                    username=options.username,
+                    account_created_at=profile.created_at,
+                )
+                day_map = await self._github_client.fetch_contribution_days_map(
+                    username=options.username,
+                    account_created_at=profile.created_at,
+                )
+                account_start = profile.created_at.astimezone(UTC).date()
+                today = datetime.now(UTC).date()
+                metrics = compute_streak_metrics(
+                    day_map,
+                    account_start=account_start,
+                    today=today,
+                )
+                context = self._build_streak_card_context(
+                    profile=profile,
+                    contributions=contributions,
+                    metrics=metrics,
+                    day_map=day_map,
+                    theme=theme,
+                    options=options,
+                )
+            elif options.card_type in (CardType.GITHUB, CardType.GITHUB_FOOTER):
+                profile = await self._github_client.fetch_user_profile(options.username)
+                contributions = await self._github_client.fetch_contribution_stats(
+                    username=options.username,
+                    account_created_at=profile.created_at,
+                )
+                level_info = self._calculate_level(contributions.total_contributions_all_time)
+                user_stats = GithubUserStats(profile=profile, contributions=contributions, level=level_info)
+                activity = await self._github_client.fetch_github_card_activity(
+                    options.username,
+                    account_created_at=profile.created_at,
+                    top_n_repos=self._settings.github_card_top_repos,
+                )
+                avatar_href = await self._avatar_href_for_svg(
+                    user_stats.profile.avatar_url,
+                    options.show_avatar,
+                )
+                if options.card_type == CardType.GITHUB_FOOTER:
+                    context = self._build_github_card_footer_context(
+                        user_stats=user_stats,
+                        activity=activity,
+                        theme=theme,
+                        options=options,
+                        avatar_url=avatar_href,
+                    )
+                else:
+                    context = self._build_github_card_context(
+                        user_stats=user_stats,
+                        activity=activity,
+                        theme=theme,
+                        options=options,
+                        avatar_url=avatar_href,
+                    )
             else:
-                context = self._build_github_card_context(
+                profile = await self._github_client.fetch_user_profile(options.username)
+                contributions = await self._github_client.fetch_contribution_stats(
+                    username=options.username,
+                    account_created_at=profile.created_at,
+                )
+                level_info = self._calculate_level(contributions.total_contributions_all_time)
+                user_stats = GithubUserStats(profile=profile, contributions=contributions, level=level_info)
+                avatar_href = await self._avatar_href_for_svg(
+                    user_stats.profile.avatar_url,
+                    options.show_avatar,
+                )
+                context = self._build_level_card_context(
                     user_stats=user_stats,
-                    activity=activity,
                     theme=theme,
                     options=options,
                     avatar_url=avatar_href,
                 )
-        else:
-            profile = await self._github_client.fetch_user_profile(options.username)
-            contributions = await self._github_client.fetch_contribution_stats(
-                username=options.username,
-                account_created_at=profile.created_at,
-            )
-            level_info = self._calculate_level(contributions.total_contributions_all_time)
-            user_stats = GithubUserStats(profile=profile, contributions=contributions, level=level_info)
-            avatar_href = await self._avatar_href_for_svg(
-                user_stats.profile.avatar_url,
-                options.show_avatar,
-            )
-            context = self._build_level_card_context(
-                user_stats=user_stats,
-                theme=theme,
-                options=options,
-                avatar_url=avatar_href,
-            )
 
-        svg = self._template_renderer.render(
-            template_name=options.card_type.template_name,
-            context=context,
-        )
-        if self._settings.stats_cache_enabled:
-            await self._cache.set(cache_key, svg)
-        return CardRenderResult(svg=svg, cache_key=cache_key, cache_hit=False)
+            svg = self._template_renderer.render(
+                template_name=options.card_type.template_name,
+                context=context,
+            )
+            if self._settings.effective_stats_cache_enabled:
+                await self._cache.set(cache_key, svg)
+            return CardRenderResult(svg=svg, cache_key=cache_key, cache_hit=False)
+        finally:
+            if key_lock is not None and key_lock.locked():
+                key_lock.release()
 
     def _is_minimalist(self, options: StatsRequestOptions) -> bool:
         """Return True when the minimalist theme is selected."""

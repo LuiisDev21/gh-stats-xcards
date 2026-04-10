@@ -78,7 +78,7 @@ async def get_stats_svg(
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
-    if settings.stats_cache_enabled:
+    if settings.effective_stats_cache_enabled:
         cache_control = f"public, max-age={settings.cache_ttl_seconds}"
     else:
         cache_control = "no-store"

@@ -69,6 +69,16 @@ class Settings(BaseSettings):
     streak_card_width: int = 495
     streak_card_height: int = 195
 
+    @property
+    def effective_stats_cache_enabled(self) -> bool:
+        """Enable cache in production even if the env flag is misconfigured.
+
+        Rendering cards in production without cache causes repeated expensive GraphQL calls
+        and slow GitHub README image loads.
+        """
+
+        return self.stats_cache_enabled or self.environment.strip().lower() == "production"
+
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:

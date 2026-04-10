@@ -101,6 +101,7 @@ query UserRepoLanguages($login: String!, $first: Int!, $after: String) {
       first: $first
       after: $after
       ownerAffiliations: OWNER
+      privacy: PUBLIC
       isFork: false
       orderBy: {field: UPDATED_AT, direction: DESC}
     ) {
