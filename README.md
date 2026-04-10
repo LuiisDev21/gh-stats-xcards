@@ -9,6 +9,7 @@ Embed cards in your profile README or any page that accepts images.
 ## Table of contents
 
 - [Quick embed](#quick-embed)
+- [Demo cards](#demo-cards)
 - [Live preview](#live-preview)
 - [API](#api)
 - [Card types](#card-types)
@@ -37,6 +38,49 @@ https://YOUR_DEPLOYMENT/stats/YOUR_USERNAME?card=github&theme=tokyonight&show_av
 ```
 
 **README avatars:** with `show_avatar=true`, the API embeds the profile photo inside the SVG (data URI) so GitHub does not block external avatar URLs referenced from SVG cards.
+
+---
+
+## Demo cards
+
+Visual gallery of all card variants:
+
+![GitHub Stats xCards visual demo](docs/readme/cards-demo.svg)
+
+Live demos rendered from this deployment using `torvalds`:
+
+- Deployment: `https://gh-stats-xcards.fly.dev`
+- Username: `torvalds`
+
+> Tip: keep `cache busting` while tuning styles by appending `&v=1` and bumping the value when needed.
+
+### Level
+
+[![Level card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=level&theme=dark)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=level&theme=dark)
+
+### Level alternate
+
+[![Level alternate card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=level-alternate&theme=tokyonight)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=level-alternate&theme=tokyonight)
+
+### GitHub (vertical)
+
+[![GitHub card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=github&theme=radical&show_avatar=true)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=github&theme=radical&show_avatar=true)
+
+### GitHub footer (wide)
+
+[![GitHub footer card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=github-footer&theme=dracula&show_avatar=true)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=github-footer&theme=dracula&show_avatar=true)
+
+### Contribution graph
+
+[![Contribution graph card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=contribution-graph&theme=vue)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=contribution-graph&theme=vue)
+
+### Streak
+
+[![Streak card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=streak&theme=vision-friendly-dark)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=streak&theme=vision-friendly-dark)
+
+### Top languages
+
+[![Top languages card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=top-languages&theme=pastel)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=top-languages&theme=pastel)
 
 ---
 
