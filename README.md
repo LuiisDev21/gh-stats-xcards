@@ -50,27 +50,27 @@ https://YOUR_DEPLOYMENT/stats/YOUR_USERNAME?card=github&theme=tokyonight&show_av
 
 ### Level alternate
 
-[![Level alternate card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=level-alternate&theme=tokyonight)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=level-alternate&theme=tokyonight)
+[![Level alternate card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=level-alternate&theme=dark)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=level-alternate&theme=dark)
 
 ### GitHub (vertical)
 
-[![GitHub card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=github&theme=radical&show_avatar=true)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=github&theme=radical&show_avatar=true)
+[![GitHub card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=github&theme=dark&show_avatar=true)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=github&theme=dark&show_avatar=true)
 
 ### GitHub footer (wide)
 
-[![GitHub footer card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=github-footer&theme=dracula&show_avatar=true)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=github-footer&theme=dracula&show_avatar=true)
+[![GitHub footer card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=github-footer&theme=dark&show_avatar=true)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=github-footer&theme=dark&show_avatar=true)
 
 ### Contribution graph
 
-[![Contribution graph card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=contribution-graph&theme=vue)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=contribution-graph&theme=vue)
+[![Contribution graph card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=contribution-graph&theme=dark)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=contribution-graph&theme=dark)
 
 ### Streak
 
-[![Streak card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=streak&theme=vision-friendly-dark)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=streak&theme=vision-friendly-dark)
+[![Streak card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=streak&theme=dark)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=streak&theme=dark)
 
 ### Top languages
 
-[![Top languages card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=top-languages&theme=pastel)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=top-languages&theme=pastel)
+[![Top languages card](https://gh-stats-xcards.fly.dev/stats/torvalds?card=top-languages&theme=dark)](https://gh-stats-xcards.fly.dev/stats/torvalds?card=top-languages&theme=dark)
 
 ---
 
