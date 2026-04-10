@@ -9,7 +9,7 @@ from typing import AsyncIterator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 
 from app.api.v1.stats_router import router as stats_router
 from app.domain.models import ThemeTokens
@@ -22,6 +22,7 @@ from app.infrastructure.svg_templates import SvgTemplateRenderer
 from app.services.github_stats_service import GithubStatsService
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PUBLIC_BASE_URL = "https://xcards.duckdns.org"
 
 
 @asynccontextmanager
@@ -92,6 +93,47 @@ async def healthcheck() -> dict[str, str]:
     """Basic health endpoint."""
 
     return {"status": "ok", "service": settings.app_name, "version": settings.app_version}
+
+
+@app.get("/robots.txt")
+async def robots_txt() -> Response:
+    """Robots directives for search crawlers."""
+
+    body = "\n".join(
+        [
+            "User-agent: *",
+            "Allow: /",
+            "Sitemap: https://xcards.duckdns.org/sitemap.xml",
+            "",
+        ]
+    )
+    return Response(content=body, media_type="text/plain; charset=utf-8")
+
+
+@app.get("/sitemap.xml")
+async def sitemap_xml() -> Response:
+    """Minimal sitemap for primary crawlable endpoints."""
+
+    xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>{PUBLIC_BASE_URL}/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>{PUBLIC_BASE_URL}/themes</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>{PUBLIC_BASE_URL}/stats/torvalds?card=github&amp;theme=dark&amp;show_avatar=true</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>
+"""
+    return Response(content=xml, media_type="application/xml; charset=utf-8")
 
 
 def _theme_tokens_public(t: ThemeTokens) -> dict[str, str]:
