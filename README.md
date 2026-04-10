@@ -259,7 +259,7 @@ On **Render**, place `runtime.txt` in the repo root (already included) so the bu
 
 ## License
 
-No license file is bundled in this repository; add one if you publish the project publicly.
+MIT. See `LICENSE`.
 
 ---
 
