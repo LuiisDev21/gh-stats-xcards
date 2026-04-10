@@ -43,16 +43,6 @@ https://YOUR_DEPLOYMENT/stats/YOUR_USERNAME?card=github&theme=tokyonight&show_av
 
 ## Demo cards
 
-Visual gallery of all card variants:
-
-![GitHub Stats xCards visual demo](docs/readme/cards-demo.svg)
-
-Live demos rendered from this deployment using `torvalds`:
-
-- Deployment: `https://gh-stats-xcards.fly.dev`
-- Username: `torvalds`
-
-> Tip: keep `cache busting` while tuning styles by appending `&v=1` and bumping the value when needed.
 
 ### Level
 
