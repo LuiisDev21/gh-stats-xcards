@@ -1,5 +1,12 @@
 # GitHub Stats xCards
 
+[![Release](https://img.shields.io/github/v/release/LuiisDev21/gh-stats-xcards?style=flat-square&label=release&color=2ea44f)](https://github.com/LuiisDev21/gh-stats-xcards/releases)
+[![Stars](https://img.shields.io/github/stars/LuiisDev21/gh-stats-xcards?style=flat-square&label=stars&color=yellow)](https://github.com/LuiisDev21/gh-stats-xcards/stargazers)
+[![License: MIT](https://img.shields.io/github/license/LuiisDev21/gh-stats-xcards?style=flat-square&label=license&color=blue)](https://github.com/LuiisDev21/gh-stats-xcards/blob/main/LICENSE)
+[![Live API](https://img.shields.io/website?style=flat-square&label=live%20api&up_message=online&down_message=offline&url=https%3A%2F%2Fgh-stats-xcards.fly.dev%2Fhealth)](https://gh-stats-xcards.fly.dev/health)
+[![Python](https://img.shields.io/badge/python-3.12-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+
 Render **SVG profile cards** from live GitHub data: contribution totals, level progression, repository highlights, language mix, and more. Built with **FastAPI**, **Jinja2**, and the **GitHub GraphQL API**.
 
 Embed cards in your profile README or any page that accepts images.
