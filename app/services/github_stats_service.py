@@ -97,8 +97,23 @@ class GithubStatsService:
 
         if not show_avatar:
             return avatar_url
-        data_uri = await self._github_client.fetch_url_as_data_uri(avatar_url)
+        small_url = self._small_avatar_url(avatar_url)
+        data_uri = await self._github_client.fetch_url_as_data_uri(small_url)
         return data_uri if data_uri is not None else avatar_url
+
+    @staticmethod
+    def _small_avatar_url(url: str) -> str:
+        """Request a 96px avatar so embedded data URIs stay small.
+
+        GitHub serves avatars up to 400px by default; embedding the full PNG
+        as a base64 data URI can produce ~1MB SVGs that many renderers
+        (GitHub Camo, Cloudinary, slow clients) refuse or fail to load.
+        Cards render avatars in ~60-100px frames, so 96px is more than enough.
+        """
+        if "avatars.githubusercontent.com" not in url:
+            return url
+        sep = "&" if "?" in url else "?"
+        return f"{url}{sep}s=96"
 
     async def generate_card(self, options: StatsRequestOptions) -> CardRenderResult:
         """Generate an SVG card for the given options.
